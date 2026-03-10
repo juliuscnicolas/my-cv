@@ -353,9 +353,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
             console.log('CSS class applied, starting canvas capture...');
             
-            // Capture with optimal settings for CSS styling
+            // Capture with optimal settings
             const canvas = await html2canvas(container, {
-                scale: 1.5,
+                scale: 2,
                 useCORS: true,
                 allowTaint: true,
                 backgroundColor: '#ffffff',
@@ -366,7 +366,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 logging: false,
                 removeContainer: false,
                 imageTimeout: 15000,
-                foreignObjectRendering: true, // Better CSS support
                 ignoreElements: (element) => {
                     return element.classList && (
                         element.classList.contains('print-button') ||
@@ -383,32 +382,40 @@ document.addEventListener('DOMContentLoaded', function() {
             const pdf = new jsPDF('p', 'mm', 'a4');
             const pageWidth = 210; // A4 width in mm
             const pageHeight = 297; // A4 height in mm
-            const margin = 10; // margin in mm
-
-            // Calculate dimensions
-            const canvasWidth = canvas.width;
-            const canvasHeight = canvas.height;
-            const ratio = canvasHeight / canvasWidth;
+            const margin = 5; // margin in mm
 
             const imgWidth = pageWidth - (margin * 2);
-            const imgHeight = imgWidth * ratio;
-
-            const imgData = canvas.toDataURL('image/png', 0.95);
-
-            // Add image to PDF with page splitting if needed
-            let position = 0;
-            let heightLeft = imgHeight;
             const pageContentHeight = pageHeight - (margin * 2);
 
-            // First page
-            pdf.addImage(imgData, 'PNG', margin, margin, imgWidth, imgHeight);
+            // Calculate how many pixels correspond to one page of content
+            const scaleFactor = canvas.width / imgWidth; // pixels per mm
+            const pageHeightInPx = Math.floor(pageContentHeight * scaleFactor);
+            const totalPages = Math.ceil(canvas.height / pageHeightInPx);
 
-            // Add additional pages if content is too tall
-            while (heightLeft > pageContentHeight) {
-                pdf.addPage();
-                position = -(pageContentHeight * (pdf.internal.getNumberOfPages() - 1));
-                pdf.addImage(imgData, 'PNG', margin, position + margin, imgWidth, imgHeight);
-                heightLeft -= pageContentHeight;
+            console.log(`Total pages: ${totalPages}, Canvas: ${canvas.width}x${canvas.height}`);
+
+            for (let page = 0; page < totalPages; page++) {
+                if (page > 0) pdf.addPage();
+
+                // Create a temporary canvas for this page slice
+                const pageCanvas = document.createElement('canvas');
+                pageCanvas.width = canvas.width;
+                const remainingHeight = canvas.height - (page * pageHeightInPx);
+                pageCanvas.height = Math.min(pageHeightInPx, remainingHeight);
+
+                const ctx = pageCanvas.getContext('2d');
+                // Draw only the portion for this page
+                ctx.drawImage(
+                    canvas,
+                    0, page * pageHeightInPx,                          // source x, y
+                    canvas.width, pageCanvas.height,                    // source width, height
+                    0, 0,                                               // dest x, y
+                    pageCanvas.width, pageCanvas.height                 // dest width, height
+                );
+
+                const pageImgData = pageCanvas.toDataURL('image/png', 0.95);
+                const sliceHeight = (pageCanvas.height / scaleFactor);
+                pdf.addImage(pageImgData, 'PNG', margin, margin, imgWidth, sliceHeight);
             }
 
             // Generate filename with current date
@@ -467,7 +474,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Capture with moderate settings for better compatibility
             const canvas = await html2canvas(container, {
-                scale: 1.2,
+                scale: 2,
                 useCORS: true,
                 allowTaint: true,
                 backgroundColor: '#ffffff',
@@ -477,7 +484,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 scrollY: 0,
                 logging: false,
                 removeContainer: false,
-                foreignObjectRendering: true,
                 imageTimeout: 12000,
                 ignoreElements: (element) => {
                     return element.classList && (
@@ -489,26 +495,39 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
 
-            // Process the canvas into PDF
-            const imgData = canvas.toDataURL('image/png', 0.9);
+            // Process the canvas into PDF using page slicing
             const pdf = new jsPDF('p', 'mm', 'a4');
             
-            const imgWidth = 210; // A4 width in mm
+            const pageWidth = 210; // A4 width in mm
             const pageHeight = 297; // A4 height in mm
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
-            let heightLeft = imgHeight;
-            let position = 0;
+            const margin = 5;
 
-            // Add first page
-            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
+            const imgWidth = pageWidth - (margin * 2);
+            const pageContentHeight = pageHeight - (margin * 2);
+            const scaleFactor = canvas.width / imgWidth;
+            const pageHeightInPx = Math.floor(pageContentHeight * scaleFactor);
+            const totalPages = Math.ceil(canvas.height / pageHeightInPx);
 
-            // Add additional pages if needed
-            while (heightLeft >= 0) {
-                position = heightLeft - imgHeight;
-                pdf.addPage();
-                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
+            for (let page = 0; page < totalPages; page++) {
+                if (page > 0) pdf.addPage();
+
+                const pageCanvas = document.createElement('canvas');
+                pageCanvas.width = canvas.width;
+                const remainingHeight = canvas.height - (page * pageHeightInPx);
+                pageCanvas.height = Math.min(pageHeightInPx, remainingHeight);
+
+                const ctx = pageCanvas.getContext('2d');
+                ctx.drawImage(
+                    canvas,
+                    0, page * pageHeightInPx,
+                    canvas.width, pageCanvas.height,
+                    0, 0,
+                    pageCanvas.width, pageCanvas.height
+                );
+
+                const pageImgData = pageCanvas.toDataURL('image/png', 0.9);
+                const sliceHeight = (pageCanvas.height / scaleFactor);
+                pdf.addImage(pageImgData, 'PNG', margin, margin, imgWidth, sliceHeight);
             }
 
             // Generate filename with current date

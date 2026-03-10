@@ -1107,15 +1107,17 @@ body {
   .certification-item {
     break-inside: avoid !important;
     page-break-inside: avoid !important;
-    margin: 0 0 0.4rem 0 !important;
-    padding: 0.5rem !important;
+    margin: 0 0 1rem 0 !important;
+    padding: 0.8rem !important;
     background: #f8fafc !important;
     border-left: 2pt solid #2563eb !important;
     border-radius: 0 !important;
     box-shadow: none !important;
     transform: none !important;
     width: 100% !important;
-    overflow: visible !important;
+    overflow: hidden !important;
+    clear: both !important;
+    isolation: isolate !important;
   }
 
   .project-item {
@@ -1141,11 +1143,11 @@ body {
 
   .experience-header,
   .education-header {
-    display: flex !important;
-    justify-content: space-between !important;
+    display: block !important;
+    justify-content: flex-start !important;
     align-items: flex-start !important;
     margin: 0 0 0.4rem 0 !important;
-    gap: 0.5rem !important;
+    gap: 0.3rem !important;
     padding: 0 !important;
     width: 100% !important;
     overflow: visible !important;
@@ -1153,9 +1155,9 @@ body {
 
   .experience-title,
   .education-title {
-    margin: 0 !important;
+    margin: 0 0 0.3rem 0 !important;
     padding: 0 !important;
-    flex: 1 !important;
+    flex: none !important;
     overflow: visible !important;
   }
 
@@ -1188,11 +1190,11 @@ body {
   .experience-date,
   .education-date {
     font-size: 9pt !important;
-    white-space: nowrap !important;
-    margin: 0 !important;
+    white-space: normal !important;
+    margin: 0 0 0.3rem 0 !important;
     padding: 0 !important;
     line-height: 1.2 !important;
-    flex-shrink: 0 !important;
+    flex-shrink: none !important;
   }
 
   .experience-details {
@@ -1222,10 +1224,12 @@ body {
     display: flex !important;
     flex-wrap: wrap !important;
     gap: 0.2rem !important;
-    margin: 0.3rem 0 0 0 !important;
+    margin: 0.5rem 0 0.5rem 0 !important;
     padding: 0 !important;
     width: 100% !important;
-    overflow: visible !important;
+    overflow: hidden !important;
+    clear: both !important;
+    page-break-inside: avoid !important;
   }
 
   .tech-tag,
@@ -1512,43 +1516,6 @@ body.printing .notification {
 
 .pdf-generation .header-content {
   display: block !important;
-  grid-template-columns: none !important;
-  gap: 1rem !important;
-}
-
-.pdf-generation .profile-info {
-  margin-bottom: 1.5rem !important;
-}
-
-.pdf-generation .contact-info {
-  margin-top: 1rem !important;
-}
-
-.pdf-generation .project-item {
-  color: #000000 !important;
-  background-color: #ffffff !important;
-  border: 2px solid #000000 !important;
-  opacity: 1 !important;
-  page-break-inside: avoid !important;
-}
-
-.pdf-generation .project-header h3 {
-  color: #000000 !important;
-  font-weight: bold !important;
-  opacity: 1 !important;
-}
-
-.pdf-generation .project-description {
-  color: #000000 !important;
-  opacity: 1 !important;
-}  
-
-.pdf-generation .project-tech .tech-tag {
-  color: #000000 !important;
-  background-color: #ffffff !important;
-  border: 1px solid #000000 !important;
-  font-weight: bold !important;
-  opacity: 1 !important;
 }
 
 .pdf-generation .section {
@@ -1556,26 +1523,41 @@ body.printing .notification {
   transform: none !important;
   display: block !important;
   visibility: visible !important;
-  page-break-inside: avoid !important;
-  margin-bottom: 1rem !important;
 }
 
-.pdf-generation .main-content {
-  padding: 1rem !important;
-}
-
-.pdf-generation .section-title {
-  font-size: 18px !important;
-  margin-bottom: 0.5rem !important;
-  page-break-after: avoid !important;
-}
-
-.pdf-generation .projects-grid,
-.pdf-generation .skills-container,
-.pdf-generation .experience-item {
+.pdf-generation .experience-header {
   display: block !important;
-  grid-template-columns: none !important;
-  gap: 0.5rem !important;
+}
+
+.pdf-generation .skills-grid {
+  display: block !important;
+}
+
+.pdf-generation .skill-category h4::before {
+  content: none !important;
+}
+
+.pdf-generation .section-title::after {
+  content: none !important;
+}
+
+.pdf-generation .project-item {
+  color: #000000 !important;
+  background-color: #ffffff !important;
+  border: 2px solid #333333 !important;
+  opacity: 1 !important;
+}
+
+.pdf-generation .project-header h3,
+.pdf-generation .project-description {
+  color: #000000 !important;
+  opacity: 1 !important;
+}
+
+.pdf-generation .project-tech .tech-tag {
+  color: #000000 !important;
+  border: 1px solid #333333 !important;
+  opacity: 1 !important;
 }
 
 /* Animation for smooth loading */
