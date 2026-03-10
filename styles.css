@@ -893,31 +893,29 @@ body {
   }
 }
 
-/* Print Styles - Ultra Compact */
+/* Print Styles - Optimized for Readability */
 @media print {
   * {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
-    margin: 0 !important;
-    padding: 0 !important;
     box-sizing: border-box !important;
   }
 
   @page {
-    margin: 0.4in !important;
+    margin: 0.5in !important;
     size: A4;
   }
 
   html, body {
     background: white !important;
-    font-size: 11pt !important;
-    line-height: 1.3 !important;
+    font-size: 12pt !important;
+    line-height: 1.4 !important;
     margin: 0 !important;
     padding: 0 !important;
     height: auto !important;
     width: 100% !important;
     max-width: 100% !important;
-    overflow: hidden !important;
+    overflow: visible !important;
   }
 
   .container {
@@ -928,7 +926,7 @@ body {
     padding: 0 !important;
     background: white !important;
     min-height: auto !important;
-    overflow: hidden !important;
+    overflow: visible !important;
   }
 
   /* Hide action buttons completely in print */
@@ -942,12 +940,12 @@ body {
   .header {
     background: #2563eb !important;
     color: white !important;
-    padding: 0.8rem !important;
+    padding: 1rem !important;
     margin: 0 !important;
     page-break-inside: avoid !important;
     page-break-after: avoid !important;
     width: 100% !important;
-    overflow: hidden !important;
+    overflow: visible !important;
   }
 
   .header::before {
@@ -955,111 +953,131 @@ body {
   }
 
   .header-content {
-    display: block !important;
-    gap: 0 !important;
+    display: grid !important;
+    grid-template-columns: 2fr 1fr !important;
+    gap: 1rem !important;
     margin: 0 !important;
     padding: 0 !important;
     width: 100% !important;
-    overflow: hidden !important;
+    overflow: visible !important;
+    align-items: start !important;
   }
 
   .profile-info {
-    margin-bottom: 0.6rem !important;
+    margin-bottom: 0.5rem !important;
     margin-top: 0 !important;
     padding: 0 !important;
     width: 100% !important;
-    overflow: hidden !important;
+    overflow: visible !important;
+    order: initial !important;
   }
 
   .profile-info .name {
-    font-size: 18pt !important;
-    margin: 0 !important;
+    font-size: 20pt !important;
+    margin: 0 0 0.3rem 0 !important;
     padding: 0 !important;
-    line-height: 1.1 !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    white-space: nowrap !important;
+    line-height: 1.2 !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
+    word-wrap: break-word !important;
   }
 
   .profile-info .title {
-    font-size: 11pt !important;
-    margin: 0 0 0.2rem 0 !important;
+    font-size: 14pt !important;
+    margin: 0 0 0.3rem 0 !important;
     padding: 0 !important;
-    line-height: 1.1 !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    white-space: nowrap !important;
+    line-height: 1.3 !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
+    word-wrap: break-word !important;
   }
 
   .profile-info .tagline {
-    font-size: 9pt !important;
+    font-size: 11pt !important;
     margin: 0 !important;
     padding: 0 !important;
-    line-height: 1.2 !important;
-    overflow: hidden !important;
+    line-height: 1.4 !important;
+    overflow: visible !important;
+    word-wrap: break-word !important;
+    white-space: normal !important;
   }
 
   .contact-info {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 0.2rem !important;
-    font-size: 8pt !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.3rem !important;
+    font-size: 10pt !important;
     margin: 0 !important;
     padding: 0 !important;
     width: 100% !important;
-    overflow: hidden !important;
+    overflow: visible !important;
+    order: initial !important;
   }
 
   .contact-item {
     display: flex !important;
     align-items: center !important;
-    gap: 0.2rem !important;
+    gap: 0.4rem !important;
     margin: 0 !important;
     padding: 0 !important;
-    line-height: 1.1 !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    white-space: nowrap !important;
+    line-height: 1.3 !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
+    word-wrap: break-word !important;
   }
 
   .contact-item span {
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    white-space: nowrap !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
+    word-wrap: break-word !important;
   }
 
   .contact-item i {
-    font-size: 8pt !important;
+    font-size: 10pt !important;
     margin: 0 !important;
     padding: 0 !important;
     flex-shrink: 0 !important;
   }
 
   .main-content {
-    padding: 0.6rem 0 0 0 !important;
+    padding: 0.8rem 0 0 0 !important;
     margin: 0 !important;
     width: 100% !important;
-    overflow: hidden !important;
+    overflow: visible !important;
   }
 
   .section {
-    margin: 0 0 0.8rem 0 !important;
+    margin: 0 0 0.4rem 0 !important;
     page-break-inside: avoid !important;
     animation: none !important;
     padding: 0 !important;
     width: 100% !important;
-    overflow: hidden !important;
+    overflow: visible !important;
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    display: block !important;
+    visibility: visible !important;
   }
 
   .section-title {
-    font-size: 11pt !important;
-    margin: 0 0 0.4rem 0 !important;
-    padding: 0 0 0.2rem 0 !important;
-    border-bottom: 1pt solid #2563eb !important;
-    color: #2563eb !important;
+    font-size: 14pt !important;
+    font-weight: bold !important;
+    margin: 0 0 0.5rem 0 !important;
+    padding: 0 0 0.3rem 0 !important;
+    border-bottom: 2pt solid #000000 !important;
+    color: #000000 !important;
     page-break-after: avoid !important;
-    line-height: 1.1 !important;
-    overflow: hidden !important;
+    line-height: 1.2 !important;
+    overflow: visible !important;
+    opacity: 1 !important;
+    transform: none !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
   .section-title::after {
@@ -1070,32 +1088,55 @@ body {
     margin: 0 !important;
     padding: 0 !important;
     width: 100% !important;
-    overflow: hidden !important;
+    overflow: visible !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
 
   .summary-text {
-    font-size: 9pt !important;
-    line-height: 1.25 !important;
+    font-size: 11pt !important;
+    line-height: 1.4 !important;
     margin: 0 !important;
     padding: 0 !important;
-    overflow: hidden !important;
+    overflow: visible !important;
+    word-wrap: break-word !important;
   }
 
   .experience-item,
   .education-item,
-  .project-item,
   .certification-item {
     break-inside: avoid !important;
     page-break-inside: avoid !important;
-    margin: 0 0 0.6rem 0 !important;
-    padding: 0.4rem !important;
+    margin: 0 0 0.4rem 0 !important;
+    padding: 0.5rem !important;
     background: #f8fafc !important;
-    border-left: 1.5pt solid #2563eb !important;
+    border-left: 2pt solid #2563eb !important;
     border-radius: 0 !important;
     box-shadow: none !important;
     transform: none !important;
     width: 100% !important;
-    overflow: hidden !important;
+    overflow: visible !important;
+  }
+
+  .project-item {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    margin: 0 0 0.8rem 0 !important;
+    padding: 0.6rem !important;
+    background: white !important;
+    border: 2pt solid #000000 !important;
+    border-left: 4pt solid #000000 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    transform: none !important;
+    width: 100% !important;
+    overflow: visible !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
+    color: #000000 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
   .experience-header,
@@ -1103,11 +1144,11 @@ body {
     display: flex !important;
     justify-content: space-between !important;
     align-items: flex-start !important;
-    margin: 0 0 0.2rem 0 !important;
-    gap: 0.3rem !important;
+    margin: 0 0 0.4rem 0 !important;
+    gap: 0.5rem !important;
     padding: 0 !important;
     width: 100% !important;
-    overflow: hidden !important;
+    overflow: visible !important;
   }
 
   .experience-title,
@@ -1115,124 +1156,194 @@ body {
     margin: 0 !important;
     padding: 0 !important;
     flex: 1 !important;
-    overflow: hidden !important;
+    overflow: visible !important;
   }
 
   .experience-title h3,
   .education-title h3,
   .project-header h3 {
-    font-size: 10pt !important;
-    margin: 0 !important;
+    font-size: 12pt !important;
+    font-weight: bold !important;
+    margin: 0 0 0.2rem 0 !important;
     padding: 0 !important;
-    line-height: 1.1 !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    white-space: nowrap !important;
+    line-height: 1.3 !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
+    word-wrap: break-word !important;
   }
 
   .experience-title .company,
   .education-title .university {
-    font-size: 8pt !important;
+    font-size: 10pt !important;
     margin: 0 !important;
     padding: 0 !important;
-    line-height: 1.1 !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    white-space: nowrap !important;
+    line-height: 1.3 !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
+    word-wrap: break-word !important;
   }
 
   .experience-date,
   .education-date {
-    font-size: 7pt !important;
+    font-size: 9pt !important;
     white-space: nowrap !important;
     margin: 0 !important;
     padding: 0 !important;
-    line-height: 1.1 !important;
+    line-height: 1.2 !important;
     flex-shrink: 0 !important;
   }
 
   .experience-details {
-    margin: 0 0 0.2rem 0 !important;
+    margin: 0 0 0.4rem 0 !important;
     padding: 0 !important;
     list-style: none !important;
     width: 100% !important;
-    overflow: hidden !important;
+    overflow: visible !important;
   }
 
   .experience-details li {
-    font-size: 8pt !important;
-    margin: 0 0 0.1rem 0 !important;
-    padding-left: 0.5rem !important;
-    line-height: 1.15 !important;
-    overflow: hidden !important;
+    font-size: 10pt !important;
+    margin: 0 0 0.2rem 0 !important;
+    padding-left: 0.8rem !important;
+    line-height: 1.3 !important;
+    overflow: visible !important;
+    word-wrap: break-word !important;
+    white-space: normal !important;
   }
 
   .experience-details li::before {
-    font-size: 8pt !important;
+    font-size: 10pt !important;
   }
 
   .tech-stack,
   .project-tech {
     display: flex !important;
     flex-wrap: wrap !important;
-    gap: 0.1rem !important;
-    margin: 0.2rem 0 0 0 !important;
+    gap: 0.2rem !important;
+    margin: 0.3rem 0 0 0 !important;
     padding: 0 !important;
     width: 100% !important;
-    overflow: hidden !important;
+    overflow: visible !important;
   }
 
   .tech-tag,
   .skill-tag {
     background: white !important;
-    color: #2563eb !important;
-    padding: 0.05rem 0.2rem !important;
-    border: 0.5pt solid #2563eb !important;
-    border-radius: 1pt !important;
-    font-size: 6pt !important;
+    color: #000000 !important;
+    padding: 0.1rem 0.3rem !important;
+    border: 1.5pt solid #000000 !important;
+    border-radius: 2pt !important;
+    font-size: 8pt !important;
+    font-weight: bold !important;
     transform: none !important;
     margin: 0 !important;
-    line-height: 1.1 !important;
-    white-space: nowrap !important;
+    line-height: 1.2 !important;
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    opacity: 1 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
   .skills-grid {
     display: grid !important;
-    grid-template-columns: repeat(3, 1fr) !important;
-    gap: 0.4rem !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.6rem !important;
     margin: 0 !important;
     padding: 0 !important;
     width: 100% !important;
-    overflow: hidden !important;
+    overflow: visible !important;
   }
 
   .skill-category {
     margin: 0 !important;
     padding: 0 !important;
-    overflow: hidden !important;
+    overflow: visible !important;
   }
 
   .skill-category h4 {
-    font-size: 9pt !important;
-    margin: 0 0 0.2rem 0 !important;
+    font-size: 11pt !important;
+    font-weight: bold !important;
+    margin: 0 0 0.3rem 0 !important;
     padding: 0 !important;
-    line-height: 1.1 !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    white-space: nowrap !important;
+    line-height: 1.2 !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
+    word-wrap: break-word !important;
   }
 
   .skill-category h4::before {
-    font-size: 9pt !important;
+    font-size: 11pt !important;
   }
 
   .skill-tags {
     display: flex !important;
     flex-wrap: wrap !important;
-    gap: 0.1rem !important;
+    gap: 0.2rem !important;
     margin: 0 !important;
     padding: 0 !important;
-    overflow: hidden !important;
+    overflow: visible !important;
+  }
+
+  .personal-info-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.4rem !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    overflow: visible !important;
+  }
+
+  .personal-info-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.4rem !important;
+    padding: 0.4rem !important;
+    background: #f8fafc !important;
+    border: 1pt solid #e2e8f0 !important;
+    border-left: 2pt solid #2563eb !important;
+    border-radius: 0 !important;
+    transform: none !important;
+    margin: 0 !important;
+    overflow: visible !important;
+  }
+
+  .personal-info-item::before {
+    display: none !important;
+  }
+
+  .personal-info-item i {
+    font-size: 12pt !important;
+    color: #2563eb !important;
+    min-width: 1rem !important;
+    flex-shrink: 0 !important;
+  }
+
+  .personal-info-item div {
+    flex: 1 !important;
+    min-width: 0 !important;
+    overflow: visible !important;
+  }
+
+  .personal-info-item strong {
+    display: block !important;
+    font-weight: bold !important;
+    color: #1e293b !important;
+    font-size: 10pt !important;
+    margin: 0 0 0.1rem 0 !important;
+    overflow: visible !important;
+    word-wrap: break-word !important;
+  }
+
+  .personal-info-item span {
+    font-size: 9pt !important;
+    color: #64748b !important;
+    overflow: visible !important;
+    word-wrap: break-word !important;
   }
 
   .certifications-grid,
@@ -1241,29 +1352,99 @@ body {
     margin: 0 !important;
     padding: 0 !important;
     width: 100% !important;
-    overflow: hidden !important;
+    overflow: visible !important;
+    opacity: 1 !important;
+    transform: none !important;
+    visibility: visible !important;
+  }
+
+  .certification-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.4rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .certification-item i {
+    font-size: 12pt !important;
+    color: #2563eb !important;
+    min-width: 1.2rem !important;
+    flex-shrink: 0 !important;
+  }
+
+  .certification-item h4 {
+    font-size: 10pt !important;
+    font-weight: bold !important;
+    margin: 0 0 0.1rem 0 !important;
+    overflow: visible !important;
+    word-wrap: break-word !important;
+  }
+
+  .certification-item p {
+    font-size: 9pt !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    word-wrap: break-word !important;
   }
 
   .project-header {
+    margin: 0 0 0.4rem 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .project-header h3 {
+    font-size: 13pt !important;
+    font-weight: bold !important;
     margin: 0 0 0.2rem 0 !important;
     padding: 0 !important;
-    overflow: hidden !important;
+    line-height: 1.3 !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    color: #000000 !important;
+    opacity: 1 !important;
+    transform: none !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
   .project-description {
-    font-size: 8pt !important;
-    line-height: 1.2 !important;
-    margin: 0 0 0.2rem 0 !important;
+    font-size: 10pt !important;
+    line-height: 1.4 !important;
+    margin: 0 0 0.3rem 0 !important;
     padding: 0 !important;
-    overflow: hidden !important;
+    overflow: visible !important;
+    word-wrap: break-word !important;
+    color: #000000 !important;
+    opacity: 1 !important;
+    transform: none !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .project-tech {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 0.2rem !important;
+    margin: 0.4rem 0 0 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    overflow: visible !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
 
   .education-details {
-    font-size: 8pt !important;
-    line-height: 1.2 !important;
+    font-size: 10pt !important;
+    line-height: 1.3 !important;
     margin: 0 !important;
     padding: 0 !important;
-    overflow: hidden !important;
+    overflow: visible !important;
+    word-wrap: break-word !important;
   }
 
   .footer {
@@ -1275,39 +1456,39 @@ body {
     display: none !important;
   }
 
-  /* Ultra aggressive gap removal and overflow prevention */
+  /* Remove aggressive spacing restrictions */
   h1, h2, h3, h4, h5, h6, p, ul, li, div, section, main, header {
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
-    overflow: hidden !important;
+    overflow: visible !important;
+    word-wrap: break-word !important;
   }
 
-  /* Ensure absolutely no spacing between header and content */
+  /* Ensure content flows properly */
   .header + .main-content,
   header + main {
     margin-top: 0 !important;
     padding-top: 0 !important;
   }
 
-  /* Remove all default browser spacing and prevent overflow */
+  /* Allow proper content flow */
   body, html {
     margin: 0 !important;
     padding: 0 !important;
-    overflow: hidden !important;
+    overflow: visible !important;
   }
 
-  /* Hide all decorative elements */
-  *::before,
-  *::after {
+  /* Hide only truly decorative elements */
+  .header::before,
+  .project-item::before,
+  .personal-info-item::before {
     display: none !important;
   }
 
-  /* Disable all animations and transitions */
+  /* Disable problematic animations only */
   * {
     animation: none !important;
     transition: none !important;
     box-shadow: none !important;
-    overflow-x: hidden !important;
+    overflow-x: visible !important;
   }
 }
 

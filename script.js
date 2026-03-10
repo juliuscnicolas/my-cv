@@ -210,14 +210,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 await generateAndDownloadPDF();
                 showNotification('PDF downloaded successfully!');
             } catch (error) {
-                console.error('PDF generation failed:', error);
-                // Fallback to alternative method
+                console.error('Main PDF generation failed:', error);
                 try {
                     await generatePDFAlternative();
-                    showNotification('PDF downloaded successfully (alternative method)!');
+                    showNotification('PDF downloaded successfully!');
                 } catch (fallbackError) {
-                    console.error('Alternative PDF generation also failed:', fallbackError);
-                    showNotification('PDF generation failed. Please use Print to PDF (Ctrl+P).');
+                    console.error('Alternative PDF generation failed:', fallbackError);
+                    showNotification('PDF generation failed. Please use Print to PDF (Ctrl+P) instead.');
+                    // Fallback to print dialog
+                    setTimeout(() => {
+                        window.print();
+                    }, 1000);
                 }
             } finally {
                 this.innerHTML = '<i class="fas fa-download"></i> Download PDF';
@@ -249,180 +252,144 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // PDF Generation function
+    // Simple PDF Generation using browser print
+    async function generatePDFSimple() {
+        return new Promise((resolve) => {
+            // Hide buttons during print
+            const buttons = document.querySelectorAll('.print-button, .download-button, .save-pdf-button');
+            buttons.forEach(btn => btn.style.display = 'none');
+            
+            // Add print-optimized styles temporarily
+            const printStyleSheet = document.createElement('style');
+            printStyleSheet.innerHTML = `
+                @media print {
+                    /* Ensure desktop layout in print */
+                    .header-content {
+                        display: grid !important;
+                        grid-template-columns: 2fr 1fr !important;
+                        gap: 1rem !important;
+                    }
+                    .profile-info { order: initial !important; }
+                    .contact-info { order: initial !important; }
+                    
+                    /* Make sure all sections are visible */
+                    .section {
+                        opacity: 1 !important;
+                        transform: none !important;
+                        display: block !important;
+                        visibility: visible !important;
+                        overflow: visible !important;
+                    }
+                    
+                    /* Ensure proper text wrapping */
+                    * {
+                        white-space: normal !important;
+                        overflow: visible !important;
+                        text-overflow: clip !important;
+                        word-wrap: break-word !important;
+                    }
+                }
+            `;
+            document.head.appendChild(printStyleSheet);
+            
+            // Set up print listeners
+            const handleAfterPrint = () => {
+                // Clean up
+                if (printStyleSheet && printStyleSheet.parentNode) {
+                    printStyleSheet.parentNode.removeChild(printStyleSheet);
+                }
+                buttons.forEach(btn => btn.style.display = 'flex');
+                
+                window.removeEventListener('afterprint', handleAfterPrint);
+                resolve();
+            };
+            
+            window.addEventListener('afterprint', handleAfterPrint);
+            
+            // Show instruction and trigger print
+            showNotification('Print dialog opened. Use "Save as PDF" or "Microsoft Print to PDF" for best results');
+            
+            setTimeout(() => {
+                window.print();
+            }, 500);
+        });
+    }
+
+    // PDF Generation function - Simplified and more reliable
     async function generateAndDownloadPDF() {
         // Hide action buttons during capture
-        const printButton = document.querySelector('.print-button');
-        const downloadButton = document.querySelector('.download-button');
-        const progressBar = document.querySelector('div[style*="position: fixed"][style*="top: 0"]');
-        
-        if (printButton) printButton.style.display = 'none';
-        if (downloadButton) downloadButton.style.display = 'none';
-        if (progressBar) progressBar.style.display = 'none';
+        const buttons = document.querySelectorAll('.print-button, .download-button, .save-pdf-button, .notification');
+        buttons.forEach(btn => btn.style.display = 'none');
 
-        // Store original scroll position and body styles
+        // Store original scroll position
         const originalScrollY = window.scrollY;
-        const originalBodyStyle = {
-            height: document.body.style.height,
-            overflow: document.body.style.overflow,
-            position: document.body.style.position
-        };
-        
-        // Scroll to top and prepare body for full capture
         window.scrollTo(0, 0);
-        document.body.style.height = 'auto';
-        document.body.style.overflow = 'visible';
-        document.body.style.position = 'static';
-
-        // Temporarily disable animations for better capture
-        const originalTransitions = [];
-        document.querySelectorAll('*').forEach(el => {
-            originalTransitions.push({
-                transition: el.style.transition,
-                animation: el.style.animation,
-                transform: el.style.transform
-            });
-            el.style.transition = 'none';
-            el.style.animation = 'none';
-            el.style.transform = 'none';
-        });
-
-        // Remove any scroll animations and ensure all content is visible
-        const sections = document.querySelectorAll('.section');
-        sections.forEach(section => {
-            section.style.opacity = '1';
-            section.style.transform = 'translateY(0)';
-        });
 
         try {
             const { jsPDF } = window.jspdf;
-            
             const container = document.querySelector('.container');
             
-            // Force container to show all content and calculate proper dimensions
-            const originalContainerStyle = {
-                height: container.style.height,
-                minHeight: container.style.minHeight,
-                maxHeight: container.style.maxHeight,
-                overflow: container.style.overflow
-            };
-            
-            container.style.height = 'auto';
-            container.style.minHeight = 'auto';
-            container.style.maxHeight = 'none';
-            container.style.overflow = 'visible';
-            
-            // Wait for layout to settle and measure actual content
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            
-            const actualHeight = Math.max(
-                container.scrollHeight,
-                container.offsetHeight,
-                container.clientHeight
-            );
-            
-            const actualWidth = Math.max(
-                container.scrollWidth,
-                container.offsetWidth,
-                container.clientWidth
-            );
+            // Ensure all content is visible
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.style.opacity = '1';
+                section.style.transform = 'translateY(0)';
+                section.style.display = 'block';
+                section.style.visibility = 'visible';
+            });
 
-            console.log(`Capturing container: ${actualWidth}x${actualHeight}`);
+            // Wait for layout to settle
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            console.log('Starting PDF capture...');
             
             // Capture with optimal settings
             const canvas = await html2canvas(container, {
-                scale: 1.5,
+                scale: 1.5, // Good balance of quality and performance
                 useCORS: true,
                 allowTaint: true,
                 backgroundColor: '#ffffff',
-                height: actualHeight,
-                width: actualWidth,
+                height: container.scrollHeight,
+                width: container.scrollWidth,
                 scrollX: 0,
                 scrollY: 0,
-                windowWidth: actualWidth,
-                windowHeight: actualHeight,
-                x: 0,
-                y: 0,
                 logging: false,
                 removeContainer: false,
-                foreignObjectRendering: false,
-                imageTimeout: 0,
-                onclone: function(clonedDoc) {
-                    // Ensure cloned document has proper styles
-                    const clonedContainer = clonedDoc.querySelector('.container');
-                    if (clonedContainer) {
-                        clonedContainer.style.height = 'auto';
-                        clonedContainer.style.minHeight = 'auto';
-                        clonedContainer.style.overflow = 'visible';
-                        clonedContainer.style.position = 'relative';
-                    }
-                }
+                imageTimeout: 10000
             });
 
-            console.log(`Canvas generated: ${canvas.width}x${canvas.height}`);
+            console.log('Canvas captured, creating PDF...');
 
-            // Restore original container style
-            Object.assign(container.style, originalContainerStyle);
-
-            // Create PDF with proper A4 dimensions
+            // Create PDF with A4 dimensions
             const pdf = new jsPDF('p', 'mm', 'a4');
             const pageWidth = 210; // A4 width in mm
             const pageHeight = 297; // A4 height in mm
-            const margin = 10; // 10mm margin
-            const contentWidth = pageWidth - (margin * 2);
-            const contentHeight = pageHeight - (margin * 2);
+            const margin = 10; // margin in mm
 
-            // Calculate scaling to fit content properly
-            const canvasAspectRatio = canvas.height / canvas.width;
-            const contentAspectRatio = contentHeight / contentWidth;
+            // Calculate dimensions
+            const canvasWidth = canvas.width;
+            const canvasHeight = canvas.height;
+            const ratio = canvasHeight / canvasWidth;
 
-            let imgWidth, imgHeight;
-            if (canvasAspectRatio > contentAspectRatio) {
-                // Canvas is taller relative to its width
-                imgHeight = contentHeight;
-                imgWidth = contentHeight / canvasAspectRatio;
-            } else {
-                // Canvas is wider relative to its height
-                imgWidth = contentWidth;
-                imgHeight = contentWidth * canvasAspectRatio;
-            }
+            const imgWidth = pageWidth - (margin * 2);
+            const imgHeight = imgWidth * ratio;
 
             const imgData = canvas.toDataURL('image/png', 0.95);
-            
-            // Center the content on the page
-            const xOffset = margin + (contentWidth - imgWidth) / 2;
-            const yOffset = margin;
 
-            // Split content across multiple pages if needed
-            let remainingHeight = imgHeight;
-            let sourceY = 0;
-            let isFirstPage = true;
+            // Add image to PDF with page splitting if needed
+            let position = 0;
+            let heightLeft = imgHeight;
+            const pageContentHeight = pageHeight - (margin * 2);
 
-            while (remainingHeight > 0) {
-                if (!isFirstPage) {
-                    pdf.addPage();
-                }
+            // First page
+            pdf.addImage(imgData, 'PNG', margin, margin, imgWidth, imgHeight);
 
-                const pageContentHeight = Math.min(remainingHeight, contentHeight);
-                const sourceHeight = (pageContentHeight / imgHeight) * canvas.height;
-
-                // Add the image portion for this page
-                pdf.addImage(
-                    imgData, 
-                    'PNG', 
-                    xOffset, 
-                    yOffset, 
-                    imgWidth, 
-                    pageContentHeight,
-                    undefined,
-                    'FAST',
-                    0,
-                    sourceY / canvas.height
-                );
-
-                remainingHeight -= pageContentHeight;
-                sourceY += sourceHeight;
-                isFirstPage = false;
+            // Add additional pages if content is too tall
+            while (heightLeft > pageContentHeight) {
+                pdf.addPage();
+                position = -(pageContentHeight * (pdf.internal.getNumberOfPages() - 1));
+                pdf.addImage(imgData, 'PNG', margin, position + margin, imgWidth, imgHeight);
+                heightLeft -= pageContentHeight;
             }
 
             // Generate filename with current date
@@ -432,46 +399,27 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Download the PDF
             pdf.save(filename);
+            console.log('PDF downloaded successfully!');
 
         } catch (error) {
             console.error('PDF generation error:', error);
             throw error;
         } finally {
-            // Restore original styles and scroll position
-            document.querySelectorAll('*').forEach((el, index) => {
-                const original = originalTransitions[index];
-                if (original) {
-                    el.style.transition = original.transition || '';
-                    el.style.animation = original.animation || '';
-                    el.style.transform = original.transform || '';
-                }
-            });
-
-            // Restore body styles
-            Object.assign(document.body.style, originalBodyStyle);
-
             // Restore scroll position
             window.scrollTo(0, originalScrollY);
 
             // Show buttons again
             setTimeout(() => {
-                if (printButton) printButton.style.display = 'flex';
-                if (downloadButton) downloadButton.style.display = 'flex';
-                if (progressBar) progressBar.style.display = 'block';
+                buttons.forEach(btn => btn.style.display = 'flex');
             }, 100);
         }
     }
 
-    // Alternative PDF generation method - captures in sections
+    // Alternative PDF generation method - simplified
     async function generatePDFAlternative() {
         // Hide action buttons during capture
-        const printButton = document.querySelector('.print-button');
-        const downloadButton = document.querySelector('.download-button');
-        const progressBar = document.querySelector('div[style*="position: fixed"][style*="top: 0"]');
-        
-        if (printButton) printButton.style.display = 'none';
-        if (downloadButton) downloadButton.style.display = 'none';
-        if (progressBar) progressBar.style.display = 'none';
+        const buttons = document.querySelectorAll('.print-button, .download-button, .save-pdf-button, .notification');
+        buttons.forEach(btn => btn.style.display = 'none');
 
         // Store original scroll position
         const originalScrollY = window.scrollY;
@@ -479,62 +427,40 @@ document.addEventListener('DOMContentLoaded', function() {
 
         try {
             const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF('p', 'mm', 'a4');
             const container = document.querySelector('.container');
-            
-            // Create a clone of the container for manipulation
-            const clone = container.cloneNode(true);
-            clone.style.position = 'absolute';
-            clone.style.top = '0';
-            clone.style.left = '-9999px';
-            clone.style.width = container.offsetWidth + 'px';
-            clone.style.height = 'auto';
-            clone.style.minHeight = 'auto';
-            clone.style.maxWidth = 'none';
-            clone.style.overflow = 'visible';
-            
-            // Remove all transitions and animations from clone
-            clone.querySelectorAll('*').forEach(el => {
-                el.style.transition = 'none';
-                el.style.animation = 'none';
-                el.style.transform = 'none';
-                el.style.opacity = '1';
-            });
 
-            document.body.appendChild(clone);
-            
             // Wait for layout
             await new Promise(resolve => setTimeout(resolve, 100));
 
-            // Capture the clone
-            const canvas = await html2canvas(clone, {
-                scale: 1.5,
+            // Capture with moderate settings for better compatibility
+            const canvas = await html2canvas(container, {
+                scale: 1.2,
                 useCORS: true,
                 allowTaint: true,
                 backgroundColor: '#ffffff',
-                height: clone.scrollHeight,
-                width: clone.scrollWidth,
+                height: container.scrollHeight,
+                width: container.scrollWidth,
                 scrollX: 0,
                 scrollY: 0,
                 logging: false,
                 removeContainer: false
             });
 
-            // Remove the clone
-            document.body.removeChild(clone);
-
             // Process the canvas into PDF
             const imgData = canvas.toDataURL('image/png', 0.9);
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            
             const imgWidth = 210; // A4 width in mm
             const pageHeight = 297; // A4 height in mm
             const imgHeight = (canvas.height * imgWidth) / canvas.width;
             let heightLeft = imgHeight;
             let position = 0;
 
-            // Add pages
+            // Add first page
             pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
             heightLeft -= pageHeight;
 
+            // Add additional pages if needed
             while (heightLeft >= 0) {
                 position = heightLeft - imgHeight;
                 pdf.addPage();
@@ -556,9 +482,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Show buttons again
             setTimeout(() => {
-                if (printButton) printButton.style.display = 'flex';
-                if (downloadButton) downloadButton.style.display = 'flex';
-                if (progressBar) progressBar.style.display = 'block';
+                buttons.forEach(btn => btn.style.display = 'flex');
             }, 100);
         }
     }
@@ -671,9 +595,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Initialize features
-    addPrintButton();
-    addDownloadButton();
-    addSaveAsPDFButton();
+    addPrintButton();        // Print CV button
+    addDownloadButton();     // Download PDF button (main)
+    addSaveAsPDFButton();    // Save as PDF button (fallback)
     addScrollProgress();
     
     // Add typing effect with delay
