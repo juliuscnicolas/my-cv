@@ -34,10 +34,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Observe all sections for scroll animations
     const sections = document.querySelectorAll('.section');
     sections.forEach(section => {
-        section.style.opacity = '0';
-        section.style.transform = 'translateY(30px)';
+        // Made sections visible by default to fix layout issue
+        section.style.opacity = '1';
+        section.style.transform = 'translateY(0)';
         section.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
-        observer.observe(section);
+        // Temporarily disable observer to fix broken layout
+        // observer.observe(section);
     });
 
     // Add hover effects for tech tags
@@ -315,8 +317,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // PDF Generation function - Simplified and more reliable
+    // PDF Generation function - Using CSS class approach for better html2canvas compatibility
     async function generateAndDownloadPDF() {
+        console.log('Starting PDF generation with CSS class approach...');
+
         // Hide action buttons during capture
         const buttons = document.querySelectorAll('.print-button, .download-button, .save-pdf-button, .notification');
         buttons.forEach(btn => btn.style.display = 'none');
@@ -329,6 +333,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const { jsPDF } = window.jspdf;
             const container = document.querySelector('.container');
             
+            // Add CSS class for PDF generation (forces dark styles)
+            document.body.classList.add('pdf-generation');
+            
             // Ensure all content is visible
             const sections = document.querySelectorAll('.section');
             sections.forEach(section => {
@@ -338,14 +345,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 section.style.visibility = 'visible';
             });
 
-            // Wait for layout to settle
-            await new Promise(resolve => setTimeout(resolve, 500));
-
-            console.log('Starting PDF capture...');
+            // Force reflow to ensure CSS takes effect
+            container.offsetHeight; 
             
-            // Capture with optimal settings
+            // Wait longer for CSS styles to apply properly
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            console.log('CSS class applied, starting canvas capture...');
+            
+            // Capture with optimal settings for CSS styling
             const canvas = await html2canvas(container, {
-                scale: 1.5, // Good balance of quality and performance
+                scale: 1.5,
                 useCORS: true,
                 allowTaint: true,
                 backgroundColor: '#ffffff',
@@ -355,7 +365,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 scrollY: 0,
                 logging: false,
                 removeContainer: false,
-                imageTimeout: 10000
+                imageTimeout: 15000,
+                foreignObjectRendering: true, // Better CSS support
+                ignoreElements: (element) => {
+                    return element.classList && (
+                        element.classList.contains('print-button') ||
+                        element.classList.contains('download-button') ||
+                        element.classList.contains('save-pdf-button') ||
+                        element.classList.contains('notification')
+                    );
+                }
             });
 
             console.log('Canvas captured, creating PDF...');
@@ -405,6 +424,9 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('PDF generation error:', error);
             throw error;
         } finally {
+            // Remove PDF generation CSS class
+            document.body.classList.remove('pdf-generation');
+            
             // Restore scroll position
             window.scrollTo(0, originalScrollY);
 
@@ -416,7 +438,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Alternative PDF generation method - simplified
+    // Alternative PDF generation method using CSS class approach
     async function generatePDFAlternative() {
+        console.log('Starting alternative PDF generation with CSS class approach...');
+
         // Hide action buttons during capture
         const buttons = document.querySelectorAll('.print-button, .download-button, .save-pdf-button, .notification');
         buttons.forEach(btn => btn.style.display = 'none');
@@ -429,8 +454,16 @@ document.addEventListener('DOMContentLoaded', function() {
             const { jsPDF } = window.jspdf;
             const container = document.querySelector('.container');
 
-            // Wait for layout
-            await new Promise(resolve => setTimeout(resolve, 100));
+            // Add CSS class for PDF generation
+            document.body.classList.add('pdf-generation');
+
+            // Force reflow to ensure CSS takes effect
+            container.offsetHeight;
+
+            // Wait for styles to apply
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            console.log('CSS class applied, starting alternative canvas capture...');
 
             // Capture with moderate settings for better compatibility
             const canvas = await html2canvas(container, {
@@ -443,7 +476,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 scrollX: 0,
                 scrollY: 0,
                 logging: false,
-                removeContainer: false
+                removeContainer: false,
+                foreignObjectRendering: true,
+                imageTimeout: 12000,
+                ignoreElements: (element) => {
+                    return element.classList && (
+                        element.classList.contains('print-button') ||
+                        element.classList.contains('download-button') ||
+                        element.classList.contains('save-pdf-button') ||
+                        element.classList.contains('notification')
+                    );
+                }
             });
 
             // Process the canvas into PDF
@@ -471,12 +514,19 @@ document.addEventListener('DOMContentLoaded', function() {
             // Generate filename with current date
             const today = new Date();
             const dateStr = today.toISOString().split('T')[0];
-            const filename = `Julius_Oliver_Nicolas_CV_${dateStr}.pdf`;
+            const filename = `Julius_Oliver_Nicolas_CV_Alternative_${dateStr}.pdf`;
 
             // Download the PDF
             pdf.save(filename);
+            console.log('Alternative PDF downloaded successfully!');
 
+        } catch (error) {
+            console.error('Alternative PDF generation error:', error);
+            throw error;
         } finally {
+            // Remove PDF generation CSS class
+            document.body.classList.remove('pdf-generation');
+            
             // Restore scroll position
             window.scrollTo(0, originalScrollY);
 

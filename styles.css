@@ -953,8 +953,8 @@ body {
   }
 
   .header-content {
-    display: grid !important;
-    grid-template-columns: 2fr 1fr !important;
+    display: block !important;
+    grid-template-columns: none !important;
     gap: 1rem !important;
     margin: 0 !important;
     padding: 0 !important;
@@ -1248,8 +1248,8 @@ body {
   }
 
   .skills-grid {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important;
+    display: block !important;
+    grid-template-columns: none !important;
     gap: 0.6rem !important;
     margin: 0 !important;
     padding: 0 !important;
@@ -1289,8 +1289,8 @@ body {
   }
 
   .personal-info-grid {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important;
+    display: block !important;
+    grid-template-columns: none !important;
     gap: 0.4rem !important;
     margin: 0 !important;
     padding: 0 !important;
@@ -1501,6 +1501,81 @@ body.printing .print-button,
 body.printing .download-button,
 body.printing .notification {
   display: none !important;
+}
+
+/* Special styles for PDF generation */
+.pdf-generation .container {
+  max-width: 100% !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+}
+
+.pdf-generation .header-content {
+  display: block !important;
+  grid-template-columns: none !important;
+  gap: 1rem !important;
+}
+
+.pdf-generation .profile-info {
+  margin-bottom: 1.5rem !important;
+}
+
+.pdf-generation .contact-info {
+  margin-top: 1rem !important;
+}
+
+.pdf-generation .project-item {
+  color: #000000 !important;
+  background-color: #ffffff !important;
+  border: 2px solid #000000 !important;
+  opacity: 1 !important;
+  page-break-inside: avoid !important;
+}
+
+.pdf-generation .project-header h3 {
+  color: #000000 !important;
+  font-weight: bold !important;
+  opacity: 1 !important;
+}
+
+.pdf-generation .project-description {
+  color: #000000 !important;
+  opacity: 1 !important;
+}  
+
+.pdf-generation .project-tech .tech-tag {
+  color: #000000 !important;
+  background-color: #ffffff !important;
+  border: 1px solid #000000 !important;
+  font-weight: bold !important;
+  opacity: 1 !important;
+}
+
+.pdf-generation .section {
+  opacity: 1 !important;
+  transform: none !important;
+  display: block !important;
+  visibility: visible !important;
+  page-break-inside: avoid !important;
+  margin-bottom: 1rem !important;
+}
+
+.pdf-generation .main-content {
+  padding: 1rem !important;
+}
+
+.pdf-generation .section-title {
+  font-size: 18px !important;
+  margin-bottom: 0.5rem !important;
+  page-break-after: avoid !important;
+}
+
+.pdf-generation .projects-grid,
+.pdf-generation .skills-container,
+.pdf-generation .experience-item {
+  display: block !important;
+  grid-template-columns: none !important;
+  gap: 0.5rem !important;
 }
 
 /* Animation for smooth loading */
