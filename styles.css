@@ -635,7 +635,7 @@ body {
   }
 
   .contact-info {
-    order: -1;
+    /* Removed order: -1 to maintain natural order (name first, then contact info) */
   }
 
   .contact-item {
