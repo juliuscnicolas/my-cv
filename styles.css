@@ -619,6 +619,12 @@ body {
   .header-content {
     grid-template-columns: 1fr;
     gap: 1.5rem;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .profile-info {
+    order: 1;
   }
 
   .profile-info .name {
@@ -635,7 +641,7 @@ body {
   }
 
   .contact-info {
-    /* Removed order: -1 to maintain natural order (name first, then contact info) */
+    order: 2;
   }
 
   .contact-item {
