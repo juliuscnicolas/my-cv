@@ -332,7 +332,7 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             const { jsPDF } = window.jspdf;
             const container = document.querySelector('.container');
-            
+
             // Add CSS class for PDF generation (forces dark styles)
             document.body.classList.add('pdf-generation');
             
@@ -348,14 +348,14 @@ document.addEventListener('DOMContentLoaded', function() {
             // Force reflow to ensure CSS takes effect
             container.offsetHeight; 
             
-            // Wait longer for CSS styles to apply properly
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            // Wait for CSS styles to apply properly
+            await new Promise(resolve => setTimeout(resolve, 500));
 
             console.log('CSS class applied, starting canvas capture...');
             
             // Capture with optimal settings
             const canvas = await html2canvas(container, {
-                scale: 2,
+                scale: 1.5,
                 useCORS: true,
                 allowTaint: true,
                 backgroundColor: '#ffffff',
@@ -363,7 +363,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 width: container.scrollWidth,
                 scrollX: 0,
                 scrollY: 0,
-                logging: false,
+                logging: true,
                 removeContainer: false,
                 imageTimeout: 15000,
                 ignoreElements: (element) => {
@@ -444,7 +444,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Alternative PDF generation method - simplified
     // Alternative PDF generation method using CSS class approach
     async function generatePDFAlternative() {
         console.log('Starting alternative PDF generation with CSS class approach...');
@@ -474,7 +473,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Capture with moderate settings for better compatibility
             const canvas = await html2canvas(container, {
-                scale: 2,
+                scale: 1.5,
                 useCORS: true,
                 allowTaint: true,
                 backgroundColor: '#ffffff',
@@ -482,7 +481,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 width: container.scrollWidth,
                 scrollX: 0,
                 scrollY: 0,
-                logging: false,
+                logging: true,
                 removeContainer: false,
                 imageTimeout: 12000,
                 ignoreElements: (element) => {
