@@ -650,8 +650,15 @@ body {
     flex-direction: column;
   }
 
+  .profile-photo {
+    order: 0;
+    align-self: center;
+    justify-self: center;
+  }
+
   .profile-info {
     order: 1;
+    text-align: center;
   }
 
   .profile-info .name {
