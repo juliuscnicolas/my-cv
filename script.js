@@ -72,8 +72,66 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     });
+    function addExportButton() {
+        const exportButton = document.createElement('button');
+        exportButton.className = 'export-button';
+        exportButton.innerHTML = '<i class="fas fa-file-export"></i> Export PDF';
+        exportButton.title = 'Export CV as PDF';
+        exportButton.style.cssText = `
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            border: none;
+            border-radius: 999px;
+            background: var(--primary-color);
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+        `;
 
-    // Add print functionality
+        exportButton.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-2px)';
+            this.style.boxShadow = 'var(--shadow-lg)';
+        });
+
+        exportButton.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = 'var(--shadow-md)';
+        });
+
+        exportButton.addEventListener('click', async function() {
+            this.disabled = true;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exporting...';
+
+            try {
+                showNotification('Opening print dialog. Choose Save as PDF to export.');
+                await generatePDFSimple();
+            } finally {
+                this.disabled = false;
+                this.innerHTML = '<i class="fas fa-file-export"></i> Export PDF';
+            }
+        });
+
+        document.body.appendChild(exportButton);
+
+        window.addEventListener('beforeprint', function() {
+            exportButton.style.display = 'none';
+        });
+
+        window.addEventListener('afterprint', function() {
+            exportButton.style.display = 'flex';
+        });
+    }
+
+    // Legacy stubs kept for html2canvas ignoreElements compatibility
     function addPrintButton() {
         const printButton = document.createElement('button');
         printButton.innerHTML = '<i class="fas fa-print"></i> Print CV';
@@ -258,7 +316,7 @@ document.addEventListener('DOMContentLoaded', function() {
     async function generatePDFSimple() {
         return new Promise((resolve) => {
             // Hide buttons during print
-            const buttons = document.querySelectorAll('.print-button, .download-button, .save-pdf-button');
+            const buttons = document.querySelectorAll('.print-button, .download-button, .save-pdf-button, .fab-container, .export-button');
             buttons.forEach(btn => btn.style.display = 'none');
             
             // Add print-optimized styles temporarily
@@ -317,21 +375,82 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    async function createPdfCaptureTarget() {
+        const sourceContainer = document.querySelector('.container');
+        const captureWrapper = document.createElement('div');
+        const captureContainer = sourceContainer.cloneNode(true);
+
+        captureWrapper.style.cssText = `
+            position: fixed;
+            left: -10000px;
+            top: 0;
+            background: #ffffff;
+            z-index: -1;
+            padding: 0;
+            margin: 0;
+            opacity: 1;
+            pointer-events: none;
+        `;
+
+        captureContainer.style.margin = '0';
+        captureContainer.style.maxWidth = `${sourceContainer.offsetWidth}px`;
+        captureContainer.style.width = `${sourceContainer.offsetWidth}px`;
+        captureContainer.style.minHeight = 'auto';
+        captureContainer.style.boxShadow = 'none';
+
+        const sourceImages = sourceContainer.querySelectorAll('img');
+        const captureImages = captureContainer.querySelectorAll('img');
+
+        captureImages.forEach((captureImg, index) => {
+            const sourceImg = sourceImages[index];
+            if (!sourceImg || !sourceImg.complete || sourceImg.naturalWidth === 0) {
+                return;
+            }
+
+            try {
+                const canvas = document.createElement('canvas');
+                canvas.width = sourceImg.naturalWidth;
+                canvas.height = sourceImg.naturalHeight;
+
+                const context = canvas.getContext('2d');
+                context.drawImage(sourceImg, 0, 0);
+                captureImg.src = canvas.toDataURL('image/png');
+            } catch (error) {
+                console.warn('Unable to inline image for PDF capture:', error);
+            }
+        });
+
+        captureWrapper.appendChild(captureContainer);
+        document.body.appendChild(captureWrapper);
+
+        await new Promise(resolve => setTimeout(resolve, 100));
+
+        return { captureWrapper, captureContainer };
+    }
+
     // PDF Generation function - Using CSS class approach for better html2canvas compatibility
     async function generateAndDownloadPDF() {
         console.log('Starting PDF generation with CSS class approach...');
 
+        if (!window.html2canvas || !window.jspdf || !window.jspdf.jsPDF) {
+            await generatePDFSimple();
+            return;
+        }
+
         // Hide action buttons during capture
-        const buttons = document.querySelectorAll('.print-button, .download-button, .save-pdf-button, .notification');
+        const buttons = document.querySelectorAll('.print-button, .download-button, .save-pdf-button, .notification, .fab-container');
         buttons.forEach(btn => btn.style.display = 'none');
 
         // Store original scroll position
         const originalScrollY = window.scrollY;
         window.scrollTo(0, 0);
 
+        let captureWrapper;
+
         try {
             const { jsPDF } = window.jspdf;
-            const container = document.querySelector('.container');
+            const { captureWrapper: wrapper, captureContainer: container } = await createPdfCaptureTarget();
+            captureWrapper = wrapper;
 
             // Add CSS class for PDF generation (forces dark styles)
             document.body.classList.add('pdf-generation');
@@ -371,7 +490,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         element.classList.contains('print-button') ||
                         element.classList.contains('download-button') ||
                         element.classList.contains('save-pdf-button') ||
-                        element.classList.contains('notification')
+                        element.classList.contains('notification') ||
+                        element.classList.contains('fab-container')
                     );
                 }
             });
@@ -433,6 +553,10 @@ document.addEventListener('DOMContentLoaded', function() {
         } finally {
             // Remove PDF generation CSS class
             document.body.classList.remove('pdf-generation');
+
+            if (captureWrapper && captureWrapper.parentNode) {
+                captureWrapper.parentNode.removeChild(captureWrapper);
+            }
             
             // Restore scroll position
             window.scrollTo(0, originalScrollY);
@@ -448,17 +572,25 @@ document.addEventListener('DOMContentLoaded', function() {
     async function generatePDFAlternative() {
         console.log('Starting alternative PDF generation with CSS class approach...');
 
+        if (!window.html2canvas || !window.jspdf || !window.jspdf.jsPDF) {
+            await generatePDFSimple();
+            return;
+        }
+
         // Hide action buttons during capture
-        const buttons = document.querySelectorAll('.print-button, .download-button, .save-pdf-button, .notification');
+        const buttons = document.querySelectorAll('.print-button, .download-button, .save-pdf-button, .notification, .fab-container');
         buttons.forEach(btn => btn.style.display = 'none');
 
         // Store original scroll position
         const originalScrollY = window.scrollY;
         window.scrollTo(0, 0);
 
+        let captureWrapper;
+
         try {
             const { jsPDF } = window.jspdf;
-            const container = document.querySelector('.container');
+            const { captureWrapper: wrapper, captureContainer: container } = await createPdfCaptureTarget();
+            captureWrapper = wrapper;
 
             // Add CSS class for PDF generation
             document.body.classList.add('pdf-generation');
@@ -489,7 +621,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         element.classList.contains('print-button') ||
                         element.classList.contains('download-button') ||
                         element.classList.contains('save-pdf-button') ||
-                        element.classList.contains('notification')
+                        element.classList.contains('notification') ||
+                        element.classList.contains('fab-container')
                     );
                 }
             });
@@ -544,6 +677,10 @@ document.addEventListener('DOMContentLoaded', function() {
         } finally {
             // Remove PDF generation CSS class
             document.body.classList.remove('pdf-generation');
+
+            if (captureWrapper && captureWrapper.parentNode) {
+                captureWrapper.parentNode.removeChild(captureWrapper);
+            }
             
             // Restore scroll position
             window.scrollTo(0, originalScrollY);
@@ -561,7 +698,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.classList.add('printing');
         
         // Hide action buttons
-        const buttons = document.querySelectorAll('.print-button, .download-button');
+        const buttons = document.querySelectorAll('.print-button, .download-button, .export-button');
         buttons.forEach(btn => btn.style.display = 'none');
         
         // Trigger print
@@ -663,9 +800,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Initialize features
-    addPrintButton();        // Print CV button
-    addDownloadButton();     // Download PDF button (main)
-    addSaveAsPDFButton();    // Save as PDF button (fallback)
+    addExportButton();
     addScrollProgress();
     
     // Add typing effect with delay
@@ -687,15 +822,5 @@ document.addEventListener('DOMContentLoaded', function() {
             konamiCode = [];
         }
     });
-
-    // Add parallax effect to header
-    window.addEventListener('scroll', function() {
-        const scrolled = window.pageYOffset;
-        const header = document.querySelector('.header');
-        if (header) {
-            header.style.transform = `translateY(${scrolled * 0.5}px)`;
-        }
-    });
-
     console.log('🚀 Modern CV loaded successfully!');
 });
