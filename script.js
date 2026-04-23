@@ -4,6 +4,455 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentViewMode = 'web';
     let exportButtonRef = null;
 
+    function escapeHtml(value) {
+        return String(value ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function collectTextList(elements) {
+        return Array.from(elements)
+            .map(element => element.textContent.trim())
+            .filter(Boolean);
+    }
+
+    function buildProfessionalExportMarkup() {
+        const profileName = document.querySelector('.name')?.textContent.trim() || '';
+        const profileTitle = document.querySelector('.title')?.textContent.trim() || '';
+        const profileTagline = document.querySelector('.tagline')?.textContent.trim() || '';
+        const summary = document.querySelector('.summary-text')?.textContent.trim() || '';
+        const profilePhoto = document.querySelector('.profile-photo img');
+        const profilePhotoSrc = profilePhoto?.currentSrc || profilePhoto?.src || '';
+        const profilePhotoAlt = profilePhoto?.alt || profileName;
+
+        const contactItems = Array.from(document.querySelectorAll('.contact-info .contact-item')).map(item => ({
+            iconClass: item.querySelector('i')?.className || '',
+            value: item.querySelector('span')?.textContent.trim() || ''
+        })).filter(item => item.value);
+        const personalInfo = Array.from(document.querySelectorAll('.personal-info-item')).map(item => ({
+            iconClass: item.querySelector('i')?.className || '',
+            label: item.querySelector('strong')?.textContent.replace(':', '').trim() || '',
+            value: item.querySelector('span')?.textContent.trim() || ''
+        })).filter(item => item.label && item.value);
+
+        const experiences = Array.from(document.querySelectorAll('.experience-item')).map(item => ({
+            title: item.querySelector('.experience-title h3')?.textContent.trim() || '',
+            company: item.querySelector('.company')?.textContent.trim() || '',
+            date: item.querySelector('.experience-date span')?.textContent.trim() || '',
+            details: collectTextList(item.querySelectorAll('.experience-details li')),
+            tech: collectTextList(item.querySelectorAll('.tech-stack .tech-tag'))
+        })).filter(item => item.title || item.company);
+
+        const skills = Array.from(document.querySelectorAll('.skill-category')).map(item => ({
+            heading: item.querySelector('h4')?.textContent.trim() || '',
+            values: collectTextList(item.querySelectorAll('.skill-tag'))
+        })).filter(item => item.heading && item.values.length);
+
+        const education = Array.from(document.querySelectorAll('.education-item')).map(item => ({
+            degree: item.querySelector('.education-title h3')?.textContent.trim() || '',
+            school: item.querySelector('.university')?.textContent.trim() || '',
+            date: item.querySelector('.education-date span')?.textContent.trim() || '',
+            details: item.querySelector('.education-details')?.textContent.trim() || ''
+        })).filter(item => item.degree || item.school);
+
+        const certifications = Array.from(document.querySelectorAll('.certification-item')).map(item => ({
+            title: item.querySelector('h4')?.textContent.trim() || '',
+            details: item.querySelector('p')?.textContent.trim() || ''
+        })).filter(item => item.title);
+
+        const contactMarkup = contactItems
+            .map(item => `
+                <div class="contact-line">
+                    ${item.iconClass ? `<i class="${escapeHtml(item.iconClass)} contact-icon" aria-hidden="true"></i>` : ''}
+                    <span>${escapeHtml(item.value)}</span>
+                </div>
+            `)
+            .join('');
+
+        const personalInfoMarkup = personalInfo.length
+            ? `
+                <section>
+                    <h2>Personal Information</h2>
+                    <div class="personal-details-grid">
+                        ${personalInfo.map(item => `
+                            <div class="personal-detail-item">
+                                ${item.iconClass ? `<i class="${escapeHtml(item.iconClass)} personal-detail-icon" aria-hidden="true"></i>` : ''}
+                                <div>
+                                    <p><strong>${escapeHtml(item.label)}:</strong></p>
+                                    <p>${escapeHtml(item.value)}</p>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </section>
+            `
+            : '';
+
+        const experienceMarkup = experiences.map(item => `
+            <article class="experience-entry">
+                <div class="entry-header">
+                    <div>
+                        <h3>${escapeHtml(item.title)}</h3>
+                        <p class="subtle"><strong>${escapeHtml(item.company)}</strong></p>
+                    </div>
+                    <p class="date">${escapeHtml(item.date)}</p>
+                </div>
+                <ul>
+                    ${item.details.map(detail => `<li>${escapeHtml(detail)}</li>`).join('')}
+                </ul>
+                ${item.tech.length ? `<p class="meta"><strong>Tech:</strong> ${escapeHtml(item.tech.join(' | '))}</p>` : ''}
+            </article>
+        `).join('');
+
+        const skillsMarkup = skills.map(item => `
+            <p><strong>${escapeHtml(item.heading)}:</strong> ${escapeHtml(item.values.join(' | '))}</p>
+        `).join('');
+
+        const educationMarkup = education.map(item => `
+            <article class="education-entry">
+                <div class="entry-header">
+                    <div>
+                        <h3>${escapeHtml(item.degree)}</h3>
+                        <p class="subtle"><strong>${escapeHtml(item.school)}</strong></p>
+                    </div>
+                    <p class="date">${escapeHtml(item.date)}</p>
+                </div>
+                ${item.details ? `<p>${escapeHtml(item.details)}</p>` : ''}
+            </article>
+        `).join('');
+
+        const certificationsMarkup = certifications.map(item => `
+            <p><strong>${escapeHtml(item.title)}</strong>${item.details ? `, ${escapeHtml(item.details)}` : ''}</p>
+        `).join('');
+
+        return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${escapeHtml(profileName)} - Professional CV Export</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            color-scheme: light;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        @page {
+            size: A4;
+            margin: 0.55in;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            color: #111827;
+            background: #ffffff;
+            line-height: 1.45;
+            font-size: 11pt;
+        }
+
+        .page {
+            width: 100%;
+            max-width: 8.27in;
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        header {
+            padding-bottom: 0.18in;
+            border-bottom: 1px solid #1f2937;
+            margin-bottom: 0.2in;
+        }
+
+        .header-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 1.2in;
+            gap: 0.2in;
+            align-items: start;
+        }
+
+        .header-photo {
+            width: 1.2in;
+            height: 1.2in;
+            border-radius: 0.08in;
+            overflow: hidden;
+            border: 1px solid #d1d5db;
+            justify-self: end;
+            background: #f3f4f6;
+        }
+
+        .header-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 22pt;
+            line-height: 1.1;
+            letter-spacing: 0.01em;
+        }
+
+        .role {
+            margin: 0.04in 0 0;
+            font-size: 11.5pt;
+            font-weight: 600;
+        }
+
+        .tagline {
+            margin: 0.08in 0 0;
+            color: #374151;
+        }
+
+        .contact-row {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.05in 0.18in;
+            margin-top: 0.12in;
+            color: #374151;
+            font-size: 10pt;
+        }
+
+        .contact-line {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.07in;
+            min-width: 0;
+        }
+
+        .contact-line span {
+            min-width: 0;
+            word-break: break-word;
+        }
+
+        .contact-icon {
+            width: 0.14in;
+            margin-top: 0.03in;
+            font-size: 9pt;
+            color: #374151;
+            flex: 0 0 0.14in;
+            text-align: center;
+        }
+
+        section {
+            margin-top: 0.18in;
+            page-break-inside: avoid;
+        }
+
+        h2 {
+            margin: 0 0 0.08in;
+            font-size: 10pt;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            border-bottom: 1px solid #111827;
+            padding-bottom: 0.04in;
+        }
+
+        h3 {
+            margin: 0;
+            font-size: 11pt;
+        }
+
+        p {
+            margin: 0.04in 0 0;
+        }
+
+        .entry-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 0.16in;
+            align-items: baseline;
+        }
+
+        .subtle,
+        .date,
+        .meta {
+            color: #374151;
+        }
+
+        .date {
+            white-space: nowrap;
+            font-size: 10pt;
+        }
+
+        .experience-entry,
+        .education-entry {
+            margin-bottom: 0.14in;
+        }
+
+        ul {
+            margin: 0.05in 0 0.04in 0.18in;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 0.04in;
+        }
+
+        .compact-list p {
+            margin-top: 0.03in;
+        }
+
+        .personal-details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.12in 0.2in;
+        }
+
+        .personal-detail-item {
+            display: flex;
+            gap: 0.08in;
+            align-items: flex-start;
+        }
+
+        .personal-detail-icon {
+            width: 0.16in;
+            margin-top: 0.045in;
+            color: #374151;
+            font-size: 9.5pt;
+            text-align: center;
+            flex: 0 0 0.16in;
+        }
+
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .page {
+                max-width: none;
+            }
+
+            .header-grid {
+                grid-template-columns: minmax(0, 1fr) 1.2in;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="page">
+        <header>
+            <div class="header-grid">
+                <div>
+                    <h1>${escapeHtml(profileName)}</h1>
+                    <p class="role">${escapeHtml(profileTitle)}</p>
+                    <p class="tagline">${escapeHtml(profileTagline)}</p>
+                    <div class="contact-row">${contactMarkup}</div>
+                </div>
+                ${profilePhotoSrc ? `
+                    <div class="header-photo">
+                        <img src="${escapeHtml(profilePhotoSrc)}" alt="${escapeHtml(profilePhotoAlt)}">
+                    </div>
+                ` : ''}
+            </div>
+        </header>
+
+        <section>
+            <h2>Professional Summary</h2>
+            <p>${escapeHtml(summary)}</p>
+        </section>
+
+        ${personalInfoMarkup}
+
+        <section>
+            <h2>Professional Experience</h2>
+            ${experienceMarkup}
+        </section>
+
+        <section>
+            <h2>Technical Skills</h2>
+            <div class="compact-list">
+                ${skillsMarkup}
+            </div>
+        </section>
+
+        <section>
+            <h2>Education</h2>
+            ${educationMarkup}
+        </section>
+
+        <section>
+            <h2>Certifications</h2>
+            <div class="compact-list">
+                ${certificationsMarkup}
+            </div>
+        </section>
+    </main>
+    <script>
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                window.print();
+            }, 250);
+        });
+    <\/script>
+</body>
+</html>`;
+    }
+
+    async function openProfessionalPrintView() {
+        return new Promise((resolve, reject) => {
+            const existingFrame = document.getElementById('professional-export-frame');
+            if (existingFrame) {
+                existingFrame.remove();
+            }
+
+            const exportFrame = document.createElement('iframe');
+            exportFrame.id = 'professional-export-frame';
+            exportFrame.style.cssText = `
+                position: fixed;
+                width: 0;
+                height: 0;
+                border: 0;
+                opacity: 0;
+                pointer-events: none;
+            `;
+
+            exportFrame.onload = () => {
+                const frameWindow = exportFrame.contentWindow;
+                if (!frameWindow) {
+                    exportFrame.remove();
+                    reject(new Error('Unable to access export frame'));
+                    return;
+                }
+
+                const handleAfterPrint = () => {
+                    frameWindow.removeEventListener('afterprint', handleAfterPrint);
+                    exportFrame.remove();
+                    resolve();
+                };
+
+                frameWindow.addEventListener('afterprint', handleAfterPrint);
+                frameWindow.focus();
+                setTimeout(() => {
+                    frameWindow.print();
+                }, 150);
+            };
+
+            document.body.appendChild(exportFrame);
+
+            const frameDocument = exportFrame.contentDocument;
+            if (!frameDocument) {
+                exportFrame.remove();
+                reject(new Error('Unable to create export document'));
+                return;
+            }
+
+            frameDocument.open();
+            frameDocument.write(buildProfessionalExportMarkup());
+            frameDocument.close();
+        });
+    }
+
     function updateExportButtonState() {
         if (!exportButtonRef) {
             return;
@@ -175,9 +624,13 @@ document.addEventListener('DOMContentLoaded', function() {
             this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exporting...';
 
             try {
-                const exportModeLabel = currentViewMode === 'professional' ? 'professional' : 'web';
-                showNotification(`Opening print dialog for the ${exportModeLabel} CV. Choose Save as PDF to export.`);
-                await generatePDFSimple();
+                if (currentViewMode === 'professional') {
+                    showNotification('Opening a clean professional CV document. Choose Save as PDF to export.');
+                    await openProfessionalPrintView();
+                } else {
+                    showNotification('Opening print dialog for the web CV. Choose Save as PDF to export.');
+                    await generatePDFSimple();
+                }
             } finally {
                 this.disabled = false;
                 updateExportButtonState();
