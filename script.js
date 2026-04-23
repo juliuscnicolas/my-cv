@@ -1,6 +1,67 @@
 // Modern CV Interactive Features
 
 document.addEventListener('DOMContentLoaded', function() {
+    let currentViewMode = 'web';
+    let exportButtonRef = null;
+
+    function updateExportButtonState() {
+        if (!exportButtonRef) {
+            return;
+        }
+
+        const label = currentViewMode === 'professional'
+            ? '<i class="fas fa-file-export"></i> Export Professional PDF'
+            : '<i class="fas fa-file-export"></i> Export Web PDF';
+
+        exportButtonRef.innerHTML = label;
+        exportButtonRef.title = currentViewMode === 'professional'
+            ? 'Export the professional CV layout as PDF'
+            : 'Export the web-style CV layout as PDF';
+    }
+
+    function applyViewMode(viewMode) {
+        currentViewMode = viewMode === 'professional' ? 'professional' : 'web';
+        document.body.dataset.viewMode = currentViewMode;
+
+        const modeButtons = document.querySelectorAll('.view-mode-button');
+        modeButtons.forEach(button => {
+            const isActive = button.dataset.viewMode === currentViewMode;
+            button.classList.toggle('is-active', isActive);
+            button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        });
+
+        try {
+            window.localStorage.setItem('cvViewMode', currentViewMode);
+        } catch (error) {
+            console.log('Unable to persist view mode preference');
+        }
+
+        updateExportButtonState();
+    }
+
+    function initializeViewModeToggle() {
+        const modeButtons = document.querySelectorAll('.view-mode-button');
+        if (!modeButtons.length) {
+            return;
+        }
+
+        modeButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                applyViewMode(this.dataset.viewMode);
+            });
+        });
+
+        let savedMode = document.body.dataset.viewMode || 'web';
+
+        try {
+            savedMode = window.localStorage.getItem('cvViewMode') || savedMode;
+        } catch (error) {
+            console.log('Unable to load saved view mode preference');
+        }
+
+        applyViewMode(savedMode);
+    }
+
     // Add smooth scrolling for anchor links
     const links = document.querySelectorAll('a[href^="#"]');
     links.forEach(link => {
@@ -75,7 +136,6 @@ document.addEventListener('DOMContentLoaded', function() {
     function addExportButton() {
         const exportButton = document.createElement('button');
         exportButton.className = 'export-button';
-        exportButton.innerHTML = '<i class="fas fa-file-export"></i> Export PDF';
         exportButton.title = 'Export CV as PDF';
         exportButton.style.cssText = `
             position: fixed;
@@ -97,6 +157,9 @@ document.addEventListener('DOMContentLoaded', function() {
             transition: var(--transition);
         `;
 
+        exportButtonRef = exportButton;
+        updateExportButtonState();
+
         exportButton.addEventListener('mouseenter', function() {
             this.style.transform = 'translateY(-2px)';
             this.style.boxShadow = 'var(--shadow-lg)';
@@ -112,11 +175,12 @@ document.addEventListener('DOMContentLoaded', function() {
             this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exporting...';
 
             try {
-                showNotification('Opening print dialog. Choose Save as PDF to export.');
+                const exportModeLabel = currentViewMode === 'professional' ? 'professional' : 'web';
+                showNotification(`Opening print dialog for the ${exportModeLabel} CV. Choose Save as PDF to export.`);
                 await generatePDFSimple();
             } finally {
                 this.disabled = false;
-                this.innerHTML = '<i class="fas fa-file-export"></i> Export PDF';
+                updateExportButtonState();
             }
         });
 
@@ -316,7 +380,7 @@ document.addEventListener('DOMContentLoaded', function() {
     async function generatePDFSimple() {
         return new Promise((resolve) => {
             // Hide buttons during print
-            const buttons = document.querySelectorAll('.print-button, .download-button, .save-pdf-button, .fab-container, .export-button');
+            const buttons = document.querySelectorAll('.print-button, .download-button, .save-pdf-button, .fab-container, .export-button, .view-mode-switcher');
             buttons.forEach(btn => btn.style.display = 'none');
             
             // Add print-optimized styles temporarily
@@ -438,7 +502,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Hide action buttons during capture
-        const buttons = document.querySelectorAll('.print-button, .download-button, .save-pdf-button, .notification, .fab-container');
+        const buttons = document.querySelectorAll('.print-button, .download-button, .save-pdf-button, .notification, .fab-container, .view-mode-switcher');
         buttons.forEach(btn => btn.style.display = 'none');
 
         // Store original scroll position
@@ -491,7 +555,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         element.classList.contains('download-button') ||
                         element.classList.contains('save-pdf-button') ||
                         element.classList.contains('notification') ||
-                        element.classList.contains('fab-container')
+                        element.classList.contains('fab-container') ||
+                        element.classList.contains('view-mode-switcher')
                     );
                 }
             });
@@ -578,7 +643,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Hide action buttons during capture
-        const buttons = document.querySelectorAll('.print-button, .download-button, .save-pdf-button, .notification, .fab-container');
+        const buttons = document.querySelectorAll('.print-button, .download-button, .save-pdf-button, .notification, .fab-container, .view-mode-switcher');
         buttons.forEach(btn => btn.style.display = 'none');
 
         // Store original scroll position
@@ -622,7 +687,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         element.classList.contains('download-button') ||
                         element.classList.contains('save-pdf-button') ||
                         element.classList.contains('notification') ||
-                        element.classList.contains('fab-container')
+                        element.classList.contains('fab-container') ||
+                        element.classList.contains('view-mode-switcher')
                     );
                 }
             });
@@ -698,7 +764,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.classList.add('printing');
         
         // Hide action buttons
-        const buttons = document.querySelectorAll('.print-button, .download-button, .export-button');
+        const buttons = document.querySelectorAll('.print-button, .download-button, .export-button, .view-mode-switcher');
         buttons.forEach(btn => btn.style.display = 'none');
         
         // Trigger print
@@ -800,6 +866,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Initialize features
+    initializeViewModeToggle();
     addExportButton();
     addScrollProgress();
     
