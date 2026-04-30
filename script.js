@@ -19,7 +19,8 @@ document.addEventListener('DOMContentLoaded', function() {
             .filter(Boolean);
     }
 
-    function buildProfessionalExportMarkup() {
+    function buildProfessionalExportMarkup(options = {}) {
+        const exportMode = options.mode || 'uk';
         const profileName = document.querySelector('.name')?.textContent.trim() || '';
         const profileTitle = document.querySelector('.title')?.textContent.trim() || '';
         const profileTagline = document.querySelector('.tagline')?.textContent.trim() || '';
@@ -131,64 +132,237 @@ document.addEventListener('DOMContentLoaded', function() {
             return `<p><strong>${escapeHtml(item.title)}</strong>${detailsWithoutLink ? `, ${escapeHtml(detailsWithoutLink)}` : ''}${linkPart}</p>`;
         }).join('');
 
+        // Personal info rows — UK mode: work-relevant only; Default: all items
+        const workAuthItem = personalInfo.find(i => /work auth/i.test(i.label));
+        const availabilityItem = personalInfo.find(i => /availab/i.test(i.label));
+        const mobilityItem = personalInfo.find(i => /mobil|setup/i.test(i.label));
+
+        const infoItemsForExport = exportMode === 'default'
+            ? personalInfo
+            : [workAuthItem, availabilityItem, mobilityItem].filter(Boolean);
+
+        const infoSectionHeading = exportMode === 'default' ? 'Personal Information' : 'Additional Information';
+
+        const ukInfoRows = infoItemsForExport
+            .filter(Boolean)
+            .map(i => `<tr><td class="info-label">${escapeHtml(i.label)}</td><td>${escapeHtml(i.value)}</td></tr>`)
+            .join('');
+
+        const ukInfoMarkup = ukInfoRows ? `
+            <section>
+                <h2>${infoSectionHeading}</h2>
+                <table class="info-table">
+                    ${ukInfoRows}
+                </table>
+            </section>` : '';
+
         return `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${escapeHtml(profileName)} - Professional CV Export</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>${escapeHtml(profileName)} – CV</title>
     <style>
-        :root {
-            color-scheme: light;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         @page {
             size: A4;
-            margin: 0.55in;
+            margin: 0.7in 0.65in;
         }
 
         body {
             margin: 0;
-            font-family: "Segoe UI", Arial, sans-serif;
+            font-family: Arial, "Helvetica Neue", sans-serif;
             color: #111827;
             background: #ffffff;
-            line-height: 1.45;
-            font-size: 11pt;
+            line-height: 1.5;
+            font-size: 10.5pt;
         }
 
         .page {
             width: 100%;
             max-width: 8.27in;
             margin: 0 auto;
+        }
+
+        /* ── Header ── */
+        header {
+            border-bottom: 2px solid #111827;
+            padding-bottom: 0.14in;
+            margin-bottom: 0.16in;
+        }
+
+        h1 {
+            margin: 0 0 0.03in;
+            font-size: 20pt;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            color: #111827;
+        }
+
+        .role-title {
+            margin: 0 0 0.1in;
+            font-size: 11pt;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .contact-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.06in 0.22in;
+            font-size: 9.5pt;
+            color: #374151;
+        }
+
+        .contact-bar a {
+            color: #374151;
+            text-decoration: none;
+        }
+
+        .contact-sep::before {
+            content: '|';
+            margin-right: 0.22in;
+            color: #9ca3af;
+        }
+
+        /* ── Sections ── */
+        section {
+            margin-bottom: 0.18in;
+            page-break-inside: avoid;
+        }
+
+        h2 {
+            margin: 0 0 0.07in;
+            font-size: 9pt;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.13em;
+            color: #111827;
+            border-bottom: 1px solid #d1d5db;
+            padding-bottom: 0.03in;
+        }
+
+        p { margin: 0; }
+        p + p { margin-top: 0.05in; }
+
+        /* ── Experience / Education entries ── */
+        .entry { margin-bottom: 0.13in; }
+
+        .entry-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 0.2in;
+        }
+
+        .entry-head h3 {
+            margin: 0;
+            font-size: 10.5pt;
+            font-weight: 700;
+        }
+
+        .entry-head .date {
+            font-size: 9.5pt;
+            color: #374151;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .entry-org {
+            font-size: 10pt;
+            font-weight: 600;
+            color: #374151;
+            margin: 0.01in 0 0.04in;
+        }
+
+        ul {
+            margin: 0.04in 0 0 0.2in;
             padding: 0;
         }
 
-        header {
-            padding-bottom: 0.18in;
-            border-bottom: 1px solid #1f2937;
-            margin-bottom: 0.2in;
+        li { margin-bottom: 0.03in; }
+
+        .tech-line {
+            margin-top: 0.04in;
+            font-size: 9.5pt;
+            color: #374151;
         }
 
-        .header-grid {
-            display: grid;
-            grid-template-columns: minmax(0, 1fr) 1.2in;
-            gap: 0.2in;
-            align-items: start;
+        /* ── Skills ── */
+        .skills-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10pt;
         }
+
+        .skills-table td {
+            padding: 0.025in 0.1in 0.025in 0;
+            vertical-align: top;
+        }
+
+        .skills-table td:first-child {
+            font-weight: 700;
+            white-space: nowrap;
+            padding-right: 0.12in;
+            width: 1.5in;
+            color: #111827;
+        }
+
+        /* ── Additional info table ── */
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10pt;
+        }
+
+        .info-table td {
+            padding: 0.025in 0.1in 0.025in 0;
+            vertical-align: top;
+        }
+
+        .info-label {
+            font-weight: 700;
+            white-space: nowrap;
+            width: 1.6in;
+            color: #111827;
+        }
+
+        /* ── Certifications ── */
+        .cert-entry {
+            margin-bottom: 0.06in;
+            font-size: 10pt;
+        }
+
+        .cert-entry a {
+            color: #111827;
+            font-size: 9pt;
+        }
+
+        /* ── References ── */
+        .references-note {
+            font-size: 9.5pt;
+            color: #374151;
+            font-style: italic;
+        }
+
+        /* Photo header (Full CV export) */
+        .header-inner {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 0.25in;
+        }
+
+        .header-text { flex: 1; min-width: 0; }
 
         .header-photo {
-            width: 1.2in;
-            height: 1.2in;
-            border-radius: 0.08in;
+            width: 1.05in;
+            height: 1.05in;
+            flex-shrink: 0;
+            border-radius: 0.06in;
             overflow: hidden;
             border: 1px solid #d1d5db;
-            justify-self: end;
-            background: #f3f4f6;
         }
 
         .header-photo img {
@@ -198,211 +372,93 @@ document.addEventListener('DOMContentLoaded', function() {
             display: block;
         }
 
-        h1 {
-            margin: 0;
-            font-size: 22pt;
-            line-height: 1.1;
-            letter-spacing: 0.01em;
-        }
-
-        .role {
-            margin: 0.04in 0 0;
-            font-size: 11.5pt;
-            font-weight: 600;
-        }
-
-        .tagline {
-            margin: 0.08in 0 0;
-            color: #374151;
-        }
-
-        .contact-row {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 0.05in 0.18in;
-            margin-top: 0.12in;
-            color: #374151;
-            font-size: 10pt;
-        }
-
-        .contact-line {
-            display: flex;
-            align-items: flex-start;
-            gap: 0.07in;
-            min-width: 0;
-        }
-
-        .contact-line span {
-            min-width: 0;
-            word-break: break-word;
-        }
-
-        .contact-icon {
-            width: 0.14in;
-            margin-top: 0.03in;
-            font-size: 9pt;
-            color: #374151;
-            flex: 0 0 0.14in;
-            text-align: center;
-        }
-
-        section {
-            margin-top: 0.18in;
-            page-break-inside: avoid;
-        }
-
-        h2 {
-            margin: 0 0 0.08in;
-            font-size: 10pt;
-            text-transform: uppercase;
-            letter-spacing: 0.12em;
-            border-bottom: 1px solid #111827;
-            padding-bottom: 0.04in;
-        }
-
-        h3 {
-            margin: 0;
-            font-size: 11pt;
-        }
-
-        p {
-            margin: 0.04in 0 0;
-        }
-
-        .entry-header {
-            display: flex;
-            justify-content: space-between;
-            gap: 0.16in;
-            align-items: baseline;
-        }
-
-        .subtle,
-        .date,
-        .meta {
-            color: #374151;
-        }
-
-        .date {
-            white-space: nowrap;
-            font-size: 10pt;
-        }
-
-        .experience-entry,
-        .education-entry {
-            margin-bottom: 0.14in;
-        }
-
-        ul {
-            margin: 0.05in 0 0.04in 0.18in;
-            padding: 0;
-        }
-
-        li {
-            margin-bottom: 0.04in;
-        }
-
-        .compact-list p {
-            margin-top: 0.03in;
-        }
-
-        .personal-details-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 0.12in 0.2in;
-        }
-
-        .personal-detail-item {
-            display: flex;
-            gap: 0.08in;
-            align-items: flex-start;
-        }
-
-        .personal-detail-icon {
-            width: 0.16in;
-            margin-top: 0.045in;
-            color: #374151;
-            font-size: 9.5pt;
-            text-align: center;
-            flex: 0 0 0.16in;
-        }
-
         @media print {
-            body {
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-
-            .page {
-                max-width: none;
-            }
-
-            .header-grid {
-                grid-template-columns: minmax(0, 1fr) 1.2in;
-            }
+            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .page { max-width: none; }
         }
     </style>
 </head>
 <body>
-    <main class="page">
-        <header>
-            <div class="header-grid">
-                <div>
-                    <h1>${escapeHtml(profileName)}</h1>
-                    <p class="role">${escapeHtml(profileTitle)}</p>
-                    <p class="tagline">${escapeHtml(profileTagline)}</p>
-                    <div class="contact-row">${contactMarkup}</div>
+<main class="page">
+
+    <header>
+        <div class="header-inner">
+            <div class="header-text">
+                <h1>${escapeHtml(profileName)}</h1>
+                <p class="role-title">${escapeHtml(profileTitle)}</p>
+                <div class="contact-bar">
+                    ${contactItems.map((item, i) => `<span${i > 0 ? ' class="contact-sep"' : ''}>${escapeHtml(item.value)}</span>`).join('')}
                 </div>
-                ${profilePhotoSrc ? `
-                    <div class="header-photo">
-                        <img src="${escapeHtml(profilePhotoSrc)}" alt="${escapeHtml(profilePhotoAlt)}">
-                    </div>
-                ` : ''}
             </div>
-        </header>
+            ${exportMode === 'default' && profilePhotoSrc ? `<div class="header-photo"><img src="${escapeHtml(profilePhotoSrc)}" alt="${escapeHtml(profilePhotoAlt)}"></div>` : ''}
+        </div>
+    </header>
 
-        <section>
-            <h2>Professional Summary</h2>
-            <p>${escapeHtml(summary)}</p>
-        </section>
+    <section>
+        <h2>Professional Profile</h2>
+        <p>${escapeHtml(summary)}</p>
+    </section>
 
-        ${personalInfoMarkup}
+    <section>
+        <h2>Core Technical Skills</h2>
+        <table class="skills-table">
+            ${skills.map(s => `<tr><td>${escapeHtml(s.heading)}</td><td>${escapeHtml(s.values.join(', '))}</td></tr>`).join('')}
+        </table>
+    </section>
 
-        <section>
-            <h2>Professional Experience</h2>
-            ${experienceMarkup}
-        </section>
+    <section>
+        <h2>Professional Experience</h2>
+        ${experiences.map(item => `
+            <div class="entry">
+                <div class="entry-head">
+                    <h3>${escapeHtml(item.title)}</h3>
+                    <span class="date">${escapeHtml(item.date)}</span>
+                </div>
+                <p class="entry-org">${escapeHtml(item.company)}</p>
+                ${item.details.length ? `<ul>${item.details.map(d => `<li>${escapeHtml(d)}</li>`).join('')}</ul>` : ''}
+                ${item.tech.length ? `<p class="tech-line"><strong>Technologies:</strong> ${escapeHtml(item.tech.join(', '))}</p>` : ''}
+            </div>`).join('')}
+    </section>
 
-        <section>
-            <h2>Technical Skills</h2>
-            <div class="compact-list">
-                ${skillsMarkup}
-            </div>
-        </section>
+    <section>
+        <h2>Education</h2>
+        ${education.map(item => `
+            <div class="entry">
+                <div class="entry-head">
+                    <h3>${escapeHtml(item.degree)}</h3>
+                    <span class="date">${escapeHtml(item.date)}</span>
+                </div>
+                <p class="entry-org">${escapeHtml(item.school)}</p>
+                ${item.details ? `<p>${escapeHtml(item.details)}</p>` : ''}
+            </div>`).join('')}
+    </section>
 
-        <section>
-            <h2>Education</h2>
-            ${educationMarkup}
-        </section>
+    <section>
+        <h2>Certifications</h2>
+        ${certifications.map(item => {
+            const detailsClean = item.details.replace(/\s*·?\s*View Credential\s*$/i, '').trim();
+            const linkPart = item.link ? ` — <a href="${escapeHtml(item.link)}">${escapeHtml(item.link)}</a>` : '';
+            return `<p class="cert-entry"><strong>${escapeHtml(item.title)}</strong>${detailsClean ? ` — ${escapeHtml(detailsClean)}` : ''}${linkPart}</p>`;
+        }).join('')}
+    </section>
 
-        <section>
-            <h2>Certifications</h2>
-            <div class="compact-list">
-                ${certificationsMarkup}
-            </div>
-        </section>
-    </main>
-    <script>
-        window.addEventListener('load', function() {
-            setTimeout(function() {
-                window.print();
-            }, 250);
-        });
-    <\/script>
+    ${ukInfoMarkup}
+
+    <section>
+        <p class="references-note">References available upon request.</p>
+    </section>
+
+</main>
+<script>
+    window.addEventListener('load', function() {
+        setTimeout(function() { window.print(); }, 250);
+    });
+<\/script>
 </body>
 </html>`;
     }
 
-    async function openProfessionalPrintView() {
+    async function openProfessionalPrintView(options = {}) {
         return new Promise((resolve, reject) => {
             const existingFrame = document.getElementById('professional-export-frame');
             if (existingFrame) {
@@ -451,7 +507,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             frameDocument.open();
-            frameDocument.write(buildProfessionalExportMarkup());
+            frameDocument.write(buildProfessionalExportMarkup(options));
             frameDocument.close();
         });
     }
@@ -461,8 +517,8 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        exportButtonRef.innerHTML = '<i class="fas fa-file-export"></i> Export Professional PDF';
-        exportButtonRef.title = 'Export the professional CV layout as PDF';
+        exportButtonRef.innerHTML = '<i class="fas fa-file-pdf"></i> Save as UK CV PDF';
+        exportButtonRef.title = 'Export a UK-standard CV as a print-ready PDF';
     }
 
     function applyViewMode(viewMode) {
@@ -568,6 +624,104 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     });
+    function showExportChoiceModal() {
+        return new Promise((resolve) => {
+            const backdrop = document.createElement('div');
+            backdrop.style.cssText = `
+                position: fixed;
+                inset: 0;
+                background: rgba(15, 23, 42, 0.55);
+                z-index: 10000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                backdrop-filter: blur(4px);
+            `;
+
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                background: #ffffff;
+                border-radius: 16px;
+                padding: 2rem;
+                width: 100%;
+                max-width: 460px;
+                margin: 1rem;
+                box-shadow: 0 25px 50px -12px rgba(0,0,0,0.35);
+                font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            `;
+
+            modal.innerHTML = `
+                <p style="font-size:1.1rem;font-weight:700;color:#1e293b;margin:0 0 0.3rem;">Export CV as PDF</p>
+                <p style="font-size:0.875rem;color:#64748b;margin:0 0 1.25rem;">Choose the format to export:</p>
+
+                <button data-mode="uk" style="
+                    display:flex;align-items:flex-start;gap:0.9rem;
+                    width:100%;text-align:left;
+                    background:#f8fafc;border:2px solid #e2e8f0;border-radius:12px;
+                    padding:0.9rem 1rem;cursor:pointer;margin-bottom:0.65rem;
+                    font-family:inherit;transition:border-color 0.15s,background 0.15s;
+                ">
+                    <span style="font-size:1.5rem;line-height:1;margin-top:0.1rem;">&#127468;&#127463;</span>
+                    <span>
+                        <span style="display:block;font-size:0.92rem;font-weight:700;color:#1e293b;margin-bottom:0.2rem;">UK Standard</span>
+                        <span style="display:block;font-size:0.8rem;color:#64748b;line-height:1.45;">No photo or nationality &mdash; follows Equality Act 2010 guidelines. Recommended for UK job applications.</span>
+                    </span>
+                </button>
+
+                <button data-mode="default" style="
+                    display:flex;align-items:flex-start;gap:0.9rem;
+                    width:100%;text-align:left;
+                    background:#f8fafc;border:2px solid #e2e8f0;border-radius:12px;
+                    padding:0.9rem 1rem;cursor:pointer;
+                    font-family:inherit;transition:border-color 0.15s,background 0.15s;
+                ">
+                    <span style="font-size:1.5rem;line-height:1;margin-top:0.1rem;">&#128196;</span>
+                    <span>
+                        <span style="display:block;font-size:0.92rem;font-weight:700;color:#1e293b;margin-bottom:0.2rem;">Full CV</span>
+                        <span style="display:block;font-size:0.8rem;color:#64748b;line-height:1.45;">Includes photo, nationality, and all personal details. Suitable for international applications.</span>
+                    </span>
+                </button>
+
+                <button data-mode="cancel" style="
+                    display:block;width:100%;margin-top:0.9rem;
+                    background:none;border:none;font-size:0.82rem;
+                    color:#94a3b8;cursor:pointer;padding:0.4rem;
+                    font-family:inherit;transition:color 0.15s;
+                ">Cancel</button>
+            `;
+
+            modal.querySelectorAll('button[data-mode]').forEach(btn => {
+                btn.addEventListener('mouseenter', function() {
+                    if (this.dataset.mode !== 'cancel') {
+                        this.style.borderColor = '#2563eb';
+                        this.style.background = '#eff6ff';
+                    } else {
+                        this.style.color = '#475569';
+                    }
+                });
+                btn.addEventListener('mouseleave', function() {
+                    if (this.dataset.mode !== 'cancel') {
+                        this.style.borderColor = '#e2e8f0';
+                        this.style.background = '#f8fafc';
+                    } else {
+                        this.style.color = '#94a3b8';
+                    }
+                });
+                btn.addEventListener('click', () => {
+                    backdrop.remove();
+                    resolve(btn.dataset.mode === 'cancel' ? null : btn.dataset.mode);
+                });
+            });
+
+            backdrop.addEventListener('click', (e) => {
+                if (e.target === backdrop) { backdrop.remove(); resolve(null); }
+            });
+
+            backdrop.appendChild(modal);
+            document.body.appendChild(backdrop);
+        });
+    }
+
     function addExportButton() {
         const exportButton = document.createElement('button');
         exportButton.className = 'export-button';
@@ -606,12 +760,16 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         exportButton.addEventListener('click', async function() {
+            const choice = await showExportChoiceModal();
+            if (!choice) return;
+
             this.disabled = true;
             this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exporting...';
 
             try {
-                showNotification('Opening a clean professional CV document. Choose Save as PDF to export.');
-                await openProfessionalPrintView();
+                const label = choice === 'uk' ? 'UK Standard CV' : 'Full CV';
+                showNotification(`Opening ${label} \u2014 choose Save as PDF to export.`);
+                await openProfessionalPrintView({ mode: choice });
             } finally {
                 this.disabled = false;
                 updateExportButtonState();
