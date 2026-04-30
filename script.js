@@ -529,7 +529,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        exportButtonRef.innerHTML = '<i class="fas fa-file-pdf"></i> Save as UK CV PDF';
+        exportButtonRef.innerHTML = '<i class="fas fa-file-pdf"></i> Export PDF';
         exportButtonRef.title = 'Export a UK-standard CV as a print-ready PDF';
     }
 
@@ -704,7 +704,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <span style="font-size:1.5rem;line-height:1;margin-top:0.1rem;">&#127477;&#127469;</span>
                     <span>
                         <span style="display:block;font-size:0.92rem;font-weight:700;color:#1e293b;margin-bottom:0.2rem;">PH - CV</span>
-                        <span style="display:block;font-size:0.8rem;color:#64748b;line-height:1.45;">Includes photo and PH address. For Philippine employers.</span>
+                        <span style="display:block;font-size:0.8rem;color:#64748b;line-height:1.45;">Includes photo and PH address. For Philippines employers.</span>
                     </span>
                 </button>
 
