@@ -60,7 +60,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const certifications = Array.from(document.querySelectorAll('.certification-item')).map(item => ({
             title: item.querySelector('h4')?.textContent.trim() || '',
-            details: item.querySelector('p')?.textContent.trim() || ''
+            details: item.querySelector('p')?.textContent.trim() || '',
+            link: item.querySelector('a')?.href || ''
         })).filter(item => item.title);
 
         const contactMarkup = contactItems
@@ -124,9 +125,11 @@ document.addEventListener('DOMContentLoaded', function() {
             </article>
         `).join('');
 
-        const certificationsMarkup = certifications.map(item => `
-            <p><strong>${escapeHtml(item.title)}</strong>${item.details ? `, ${escapeHtml(item.details)}` : ''}</p>
-        `).join('');
+        const certificationsMarkup = certifications.map(item => {
+            const detailsWithoutLink = item.details.replace(/\s*·?\s*View Credential\s*$/i, '').trim();
+            const linkPart = item.link ? ` &mdash; <a href="${escapeHtml(item.link)}">${escapeHtml(item.link)}</a>` : '';
+            return `<p><strong>${escapeHtml(item.title)}</strong>${detailsWithoutLink ? `, ${escapeHtml(detailsWithoutLink)}` : ''}${linkPart}</p>`;
+        }).join('');
 
         return `<!DOCTYPE html>
 <html lang="en">
@@ -458,14 +461,8 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        const label = currentViewMode === 'professional'
-            ? '<i class="fas fa-file-export"></i> Export Professional PDF'
-            : '<i class="fas fa-file-export"></i> Export Web PDF';
-
-        exportButtonRef.innerHTML = label;
-        exportButtonRef.title = currentViewMode === 'professional'
-            ? 'Export the professional CV layout as PDF'
-            : 'Export the web-style CV layout as PDF';
+        exportButtonRef.innerHTML = '<i class="fas fa-file-export"></i> Export Professional PDF';
+        exportButtonRef.title = 'Export the professional CV layout as PDF';
     }
 
     function applyViewMode(viewMode) {
@@ -490,9 +487,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function initializeViewModeToggle() {
         const modeButtons = document.querySelectorAll('.view-mode-button');
-        if (!modeButtons.length) {
-            return;
-        }
 
         modeButtons.forEach(button => {
             button.addEventListener('click', function() {
@@ -500,15 +494,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
 
-        let savedMode = document.body.dataset.viewMode || 'web';
-
-        try {
-            savedMode = window.localStorage.getItem('cvViewMode') || savedMode;
-        } catch (error) {
-            console.log('Unable to load saved view mode preference');
-        }
-
-        applyViewMode(savedMode);
+        applyViewMode('professional');
     }
 
     // Add smooth scrolling for anchor links
@@ -624,13 +610,8 @@ document.addEventListener('DOMContentLoaded', function() {
             this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exporting...';
 
             try {
-                if (currentViewMode === 'professional') {
-                    showNotification('Opening a clean professional CV document. Choose Save as PDF to export.');
-                    await openProfessionalPrintView();
-                } else {
-                    showNotification('Opening print dialog for the web CV. Choose Save as PDF to export.');
-                    await generatePDFSimple();
-                }
+                showNotification('Opening a clean professional CV document. Choose Save as PDF to export.');
+                await openProfessionalPrintView();
             } finally {
                 this.disabled = false;
                 updateExportButtonState();
