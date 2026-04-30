@@ -682,6 +682,21 @@ document.addEventListener('DOMContentLoaded', function() {
                     </span>
                 </button>
 
+                <button data-mode="ph" disabled aria-disabled="true" style="
+                    display:flex;align-items:flex-start;gap:0.9rem;
+                    width:100%;text-align:left;
+                    background:#f8fafc;border:2px dashed #cbd5e1;border-radius:12px;
+                    padding:0.9rem 1rem;cursor:not-allowed;margin-top:0.65rem;
+                    opacity:0.65;
+                    font-family:inherit;transition:border-color 0.15s,background 0.15s;
+                ">
+                    <span style="font-size:1.5rem;line-height:1;margin-top:0.1rem;">&#127477;&#127469;</span>
+                    <span>
+                        <span style="display:block;font-size:0.92rem;font-weight:700;color:#1e293b;margin-bottom:0.2rem;">PH - CV</span>
+                        <span style="display:block;font-size:0.8rem;color:#64748b;line-height:1.45;">Placeholder for a Philippines-specific CV format. Coming soon.</span>
+                    </span>
+                </button>
+
                 <button data-mode="cancel" style="
                     display:block;width:100%;margin-top:0.9rem;
                     background:none;border:none;font-size:0.82rem;
@@ -692,6 +707,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             modal.querySelectorAll('button[data-mode]').forEach(btn => {
                 btn.addEventListener('mouseenter', function() {
+                    if (this.disabled) return;
                     if (this.dataset.mode !== 'cancel') {
                         this.style.borderColor = '#2563eb';
                         this.style.background = '#eff6ff';
@@ -700,6 +716,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 });
                 btn.addEventListener('mouseleave', function() {
+                    if (this.disabled) return;
                     if (this.dataset.mode !== 'cancel') {
                         this.style.borderColor = '#e2e8f0';
                         this.style.background = '#f8fafc';
@@ -708,6 +725,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 });
                 btn.addEventListener('click', () => {
+                    if (btn.disabled) return;
                     backdrop.remove();
                     resolve(btn.dataset.mode === 'cancel' ? null : btn.dataset.mode);
                 });
@@ -762,6 +780,11 @@ document.addEventListener('DOMContentLoaded', function() {
         exportButton.addEventListener('click', async function() {
             const choice = await showExportChoiceModal();
             if (!choice) return;
+
+            if (choice === 'ph') {
+                showNotification('PH - CV export is a placeholder for now and will be added soon.');
+                return;
+            }
 
             this.disabled = true;
             this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exporting...';
