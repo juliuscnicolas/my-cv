@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const contactItems = Array.from(document.querySelectorAll('.contact-info .contact-item')).map(item => ({
             iconClass: item.querySelector('i')?.className || '',
-            value: item.querySelector('span')?.textContent.trim() || ''
+            value: item.querySelector('span, a')?.textContent.trim() || ''
         })).filter(item => item.value);
         const personalInfo = Array.from(document.querySelectorAll('.personal-info-item')).map(item => ({
             iconClass: item.querySelector('i')?.className || '',
@@ -132,16 +132,18 @@ document.addEventListener('DOMContentLoaded', function() {
             return `<p><strong>${escapeHtml(item.title)}</strong>${detailsWithoutLink ? `, ${escapeHtml(detailsWithoutLink)}` : ''}${linkPart}</p>`;
         }).join('');
 
-        // Personal info rows — UK mode: work-relevant only; Default: all items
+        // Personal info rows — UK mode: work-relevant only; PH mode: all except Work Setup; Default: all items
         const workAuthItem = personalInfo.find(i => /work auth/i.test(i.label));
         const availabilityItem = personalInfo.find(i => /availab/i.test(i.label));
         const mobilityItem = personalInfo.find(i => /mobil|setup/i.test(i.label));
 
         const infoItemsForExport = exportMode === 'default'
             ? personalInfo
+            : exportMode === 'ph'
+            ? personalInfo.filter(i => !/mobil|setup|work auth|reloc/i.test(i.label))
             : [workAuthItem, availabilityItem, mobilityItem].filter(Boolean);
 
-        const infoSectionHeading = exportMode === 'default' ? 'Personal Information' : 'Additional Information';
+        const infoSectionHeading = (exportMode === 'default' || exportMode === 'ph') ? 'Personal Information' : 'Additional Information';
 
         const ukInfoRows = infoItemsForExport
             .filter(Boolean)
@@ -387,10 +389,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 <h1>${escapeHtml(profileName)}</h1>
                 <p class="role-title">${escapeHtml(profileTitle)}</p>
                 <div class="contact-bar">
-                    ${contactItems.map((item, i) => `<span${i > 0 ? ' class="contact-sep"' : ''}>${escapeHtml(item.value)}</span>`).join('')}
+                    ${(exportMode === 'ph'
+                        ? contactItems
+                            .filter(item => !/relocat/i.test(item.value))
+                            .map(item => ({
+                                ...item,
+                                value: /UK:.*\|.*PH:/i.test(item.value)
+                                    ? item.value.replace(/^.*\|\s*PH:\s*/i, '').trim()
+                                    : item.value
+                            }))
+                        : contactItems
+                    ).map((item, i) => `<span${i > 0 ? ' class="contact-sep"' : ''}>${escapeHtml(item.value)}</span>`).join('')}
                 </div>
             </div>
-            ${exportMode === 'default' && profilePhotoSrc ? `<div class="header-photo"><img src="${escapeHtml(profilePhotoSrc)}" alt="${escapeHtml(profilePhotoAlt)}"></div>` : ''}
+            ${(exportMode === 'default' || exportMode === 'ph') && profilePhotoSrc ? `<div class="header-photo"><img src="${escapeHtml(profilePhotoSrc)}" alt="${escapeHtml(profilePhotoAlt)}"></div>` : ''}
         </div>
     </header>
 
@@ -682,18 +694,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     </span>
                 </button>
 
-                <button data-mode="ph" disabled aria-disabled="true" style="
+                <button data-mode="ph" style="
                     display:flex;align-items:flex-start;gap:0.9rem;
                     width:100%;text-align:left;
-                    background:#f8fafc;border:2px dashed #cbd5e1;border-radius:12px;
-                    padding:0.9rem 1rem;cursor:not-allowed;margin-top:0.65rem;
-                    opacity:0.65;
+                    background:#f8fafc;border:2px solid #e2e8f0;border-radius:12px;
+                    padding:0.9rem 1rem;cursor:pointer;margin-top:0.65rem;
                     font-family:inherit;transition:border-color 0.15s,background 0.15s;
                 ">
                     <span style="font-size:1.5rem;line-height:1;margin-top:0.1rem;">&#127477;&#127469;</span>
                     <span>
                         <span style="display:block;font-size:0.92rem;font-weight:700;color:#1e293b;margin-bottom:0.2rem;">PH - CV</span>
-                        <span style="display:block;font-size:0.8rem;color:#64748b;line-height:1.45;">Placeholder for a Philippines-specific CV format. Coming soon.</span>
+                        <span style="display:block;font-size:0.8rem;color:#64748b;line-height:1.45;">Includes photo and PH address. For Philippine employers.</span>
                     </span>
                 </button>
 
@@ -781,16 +792,11 @@ document.addEventListener('DOMContentLoaded', function() {
             const choice = await showExportChoiceModal();
             if (!choice) return;
 
-            if (choice === 'ph') {
-                showNotification('PH - CV export is a placeholder for now and will be added soon.');
-                return;
-            }
-
             this.disabled = true;
             this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exporting...';
 
             try {
-                const label = choice === 'uk' ? 'UK Standard CV' : 'Full CV';
+                const label = choice === 'uk' ? 'UK Standard CV' : choice === 'ph' ? 'PH CV' : 'Full CV';
                 showNotification(`Opening ${label} \u2014 choose Save as PDF to export.`);
                 await openProfessionalPrintView({ mode: choice });
             } finally {
