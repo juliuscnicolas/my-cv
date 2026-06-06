@@ -21,6 +21,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function buildProfessionalExportMarkup(options = {}) {
         const exportMode = options.mode || 'uk';
+        const isGbStandard = exportMode === 'gb-standard';
+        const pageMargins = isGbStandard ? '0.45in 0.45in' : '0.7in 0.65in';
+        const baseFontSize = isGbStandard ? '9.6pt' : '10.5pt';
+        const baseLineHeight = isGbStandard ? '1.32' : '1.5';
         const profileName = document.querySelector('.name')?.textContent.trim() || '';
         const profileTitle = document.querySelector('.title')?.textContent.trim() || '';
         const profileTagline = document.querySelector('.tagline')?.textContent.trim() || '';
@@ -126,10 +130,41 @@ document.addEventListener('DOMContentLoaded', function() {
             </article>
         `).join('');
 
+        const gbCertificationDetails = {
+            'AZ-900: Microsoft Azure Fundamentals': {
+                heading: 'AZ-900',
+                lines: [
+                    'Credential ID: 1FC5C697F97C9C16',
+                    'Certification number: AW0E49-5E0C68',
+                    'Earned on: November 22, 2020'
+                ]
+            },
+            'GH-300 - GitHub Copilot': {
+                heading: 'GH-300',
+                lines: [
+                    'Credential ID: 22FC4F4B3E213C0E',
+                    'Certification number: 95BD7F-M5DFF1',
+                    'Earned on: April 29, 2026',
+                    'Expires on: April 30, 2028'
+                ]
+            }
+        };
+
         const certificationsMarkup = certifications.map(item => {
             const detailsWithoutLink = item.details.replace(/\s*·?\s*View Credential\s*$/i, '').trim();
+
+            if (isGbStandard && gbCertificationDetails[item.title]) {
+                const cert = gbCertificationDetails[item.title];
+                return `
+                    <div class="cert-entry cert-detailed">
+                        <p><strong>${escapeHtml(cert.heading)}</strong></p>
+                        ${cert.lines.map(line => `<p class="cert-line">${escapeHtml(line)}</p>`).join('')}
+                    </div>
+                `;
+            }
+
             const linkPart = item.link ? ` &mdash; <a href="${escapeHtml(item.link)}">${escapeHtml(item.link)}</a>` : '';
-            return `<p><strong>${escapeHtml(item.title)}</strong>${detailsWithoutLink ? `, ${escapeHtml(detailsWithoutLink)}` : ''}${linkPart}</p>`;
+            return `<p class="cert-entry"><strong>${escapeHtml(item.title)}</strong>${detailsWithoutLink ? ` &mdash; ${escapeHtml(detailsWithoutLink)}` : ''}${linkPart}</p>`;
         }).join('');
 
         // Personal info rows — UK mode: work-relevant only; PH mode: all except Work Setup; Default: all items
@@ -139,6 +174,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const infoItemsForExport = exportMode === 'default'
             ? personalInfo
+            : exportMode === 'gb-standard'
+            ? [workAuthItem, availabilityItem].filter(Boolean)
             : exportMode === 'ph'
             ? personalInfo.filter(i => !/mobil|setup|work auth|reloc/i.test(i.label))
             : [workAuthItem, availabilityItem, mobilityItem].filter(Boolean);
@@ -158,6 +195,45 @@ document.addEventListener('DOMContentLoaded', function() {
                 </table>
             </section>` : '';
 
+        const primaryExperienceItems = isGbStandard ? experiences.slice(0, 5) : experiences;
+        const earlierExperienceItems = isGbStandard ? experiences.slice(5) : [];
+
+        const renderExperienceEntries = (items, options = {}) => {
+            const { compact = false, includeTech = true, detailLimit = 3 } = options;
+            return items.map(item => {
+                const details = compact ? item.details.slice(0, detailLimit) : item.details;
+                return `
+                    <div class="entry${compact ? ' compact' : ''}">
+                        <div class="entry-head">
+                            <h3>${escapeHtml(item.title)}</h3>
+                            <span class="date">${escapeHtml(item.date)}</span>
+                        </div>
+                        <p class="entry-org">${escapeHtml(item.company)}</p>
+                        ${details.length ? `<ul>${details.map(d => `<li>${escapeHtml(d)}</li>`).join('')}</ul>` : ''}
+                        ${includeTech && item.tech.length ? `<p class="tech-line"><strong>Technologies:</strong> ${escapeHtml(item.tech.join(', '))}</p>` : ''}
+                    </div>`;
+            }).join('');
+        };
+
+        const experienceSectionMarkup = renderExperienceEntries(primaryExperienceItems, {
+            compact: isGbStandard,
+            includeTech: !isGbStandard,
+            detailLimit: isGbStandard ? 2 : 3
+        });
+
+        const earlierExperienceMarkup = isGbStandard && earlierExperienceItems.length
+            ? `
+                <section>
+                    <h2>Additional Experience</h2>
+                    ${renderExperienceEntries(earlierExperienceItems, {
+                        compact: true,
+                        includeTech: false,
+                        detailLimit: 1
+                    })}
+                </section>
+            `
+            : '';
+
         return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -169,7 +245,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         @page {
             size: A4;
-            margin: 0.7in 0.65in;
+            margin: ${pageMargins};
         }
 
         body {
@@ -177,8 +253,8 @@ document.addEventListener('DOMContentLoaded', function() {
             font-family: Arial, "Helvetica Neue", sans-serif;
             color: #111827;
             background: #ffffff;
-            line-height: 1.5;
-            font-size: 10.5pt;
+            line-height: ${baseLineHeight};
+            font-size: ${baseFontSize};
         }
 
         .page {
@@ -190,21 +266,21 @@ document.addEventListener('DOMContentLoaded', function() {
         /* ── Header ── */
         header {
             border-bottom: 2px solid #111827;
-            padding-bottom: 0.14in;
-            margin-bottom: 0.16in;
+            padding-bottom: ${isGbStandard ? '0.08in' : '0.14in'};
+            margin-bottom: ${isGbStandard ? '0.1in' : '0.16in'};
         }
 
         h1 {
             margin: 0 0 0.03in;
-            font-size: 20pt;
+            font-size: ${isGbStandard ? '17pt' : '20pt'};
             font-weight: 700;
             letter-spacing: 0.01em;
             color: #111827;
         }
 
         .role-title {
-            margin: 0 0 0.1in;
-            font-size: 11pt;
+            margin: 0 0 ${isGbStandard ? '0.06in' : '0.1in'};
+            font-size: ${isGbStandard ? '10pt' : '11pt'};
             font-weight: 600;
             color: #374151;
         }
@@ -212,8 +288,8 @@ document.addEventListener('DOMContentLoaded', function() {
         .contact-bar {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.06in 0.22in;
-            font-size: 9.5pt;
+            gap: ${isGbStandard ? '0.04in 0.14in' : '0.06in 0.22in'};
+            font-size: ${isGbStandard ? '9pt' : '9.5pt'};
             color: #374151;
         }
 
@@ -224,70 +300,85 @@ document.addEventListener('DOMContentLoaded', function() {
 
         .contact-sep::before {
             content: '|';
-            margin-right: 0.22in;
+            margin-right: ${isGbStandard ? '0.14in' : '0.22in'};
             color: #9ca3af;
         }
 
         /* ── Sections ── */
         section {
-            margin-bottom: 0.18in;
+            margin-bottom: ${isGbStandard ? '0.09in' : '0.18in'};
             page-break-inside: avoid;
         }
 
+        section:last-of-type { margin-bottom: 0; }
+
+        .page-break {
+            break-before: page;
+            page-break-before: always;
+        }
+
         h2 {
-            margin: 0 0 0.07in;
-            font-size: 9pt;
+            margin: 0 0 ${isGbStandard ? '0.045in' : '0.07in'};
+            font-size: ${isGbStandard ? '8.5pt' : '9pt'};
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.13em;
+            letter-spacing: ${isGbStandard ? '0.1em' : '0.13em'};
             color: #111827;
             border-bottom: 1px solid #d1d5db;
-            padding-bottom: 0.03in;
+            padding-bottom: ${isGbStandard ? '0.02in' : '0.03in'};
         }
 
         p { margin: 0; }
-        p + p { margin-top: 0.05in; }
+        p + p { margin-top: ${isGbStandard ? '0.03in' : '0.05in'}; }
 
         /* ── Experience / Education entries ── */
-        .entry { margin-bottom: 0.13in; }
+        .entry { margin-bottom: ${isGbStandard ? '0.08in' : '0.13in'}; }
 
         .entry-head {
             display: flex;
             justify-content: space-between;
             align-items: baseline;
-            gap: 0.2in;
+            gap: ${isGbStandard ? '0.12in' : '0.2in'};
         }
 
         .entry-head h3 {
             margin: 0;
-            font-size: 10.5pt;
+            font-size: ${isGbStandard ? '9.8pt' : '10.5pt'};
             font-weight: 700;
         }
 
         .entry-head .date {
-            font-size: 9.5pt;
+            font-size: ${isGbStandard ? '8.8pt' : '9.5pt'};
             color: #374151;
             white-space: nowrap;
             flex-shrink: 0;
         }
 
         .entry-org {
-            font-size: 10pt;
+            font-size: ${isGbStandard ? '9.2pt' : '10pt'};
             font-weight: 600;
             color: #374151;
-            margin: 0.01in 0 0.04in;
+            margin: ${isGbStandard ? '0.005in 0 0.025in' : '0.01in 0 0.04in'};
         }
 
         ul {
-            margin: 0.04in 0 0 0.2in;
+            margin: ${isGbStandard ? '0.025in 0 0 0.16in' : '0.04in 0 0 0.2in'};
             padding: 0;
         }
 
-        li { margin-bottom: 0.03in; }
+        li { margin-bottom: ${isGbStandard ? '0.02in' : '0.03in'}; }
+
+        .entry.compact {
+            margin-bottom: ${isGbStandard ? '0.065in' : '0.1in'};
+        }
+
+        .entry.compact ul {
+            margin-top: 0.02in;
+        }
 
         .tech-line {
-            margin-top: 0.04in;
-            font-size: 9.5pt;
+            margin-top: ${isGbStandard ? '0.02in' : '0.04in'};
+            font-size: ${isGbStandard ? '8.9pt' : '9.5pt'};
             color: #374151;
         }
 
@@ -295,11 +386,11 @@ document.addEventListener('DOMContentLoaded', function() {
         .skills-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 10pt;
+            font-size: ${isGbStandard ? '9.1pt' : '10pt'};
         }
 
         .skills-table td {
-            padding: 0.025in 0.1in 0.025in 0;
+            padding: ${isGbStandard ? '0.015in 0.06in 0.015in 0' : '0.025in 0.1in 0.025in 0'};
             vertical-align: top;
         }
 
@@ -315,11 +406,11 @@ document.addEventListener('DOMContentLoaded', function() {
         .info-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 10pt;
+            font-size: ${isGbStandard ? '9.1pt' : '10pt'};
         }
 
         .info-table td {
-            padding: 0.025in 0.1in 0.025in 0;
+            padding: ${isGbStandard ? '0.015in 0.06in 0.015in 0' : '0.025in 0.1in 0.025in 0'};
             vertical-align: top;
         }
 
@@ -332,8 +423,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
         /* ── Certifications ── */
         .cert-entry {
-            margin-bottom: 0.06in;
-            font-size: 10pt;
+            margin-bottom: ${isGbStandard ? '0.04in' : '0.06in'};
+            font-size: ${isGbStandard ? '9.1pt' : '10pt'};
+        }
+
+        .cert-detailed {
+            margin-bottom: ${isGbStandard ? '0.05in' : '0.08in'};
+        }
+
+        .cert-line {
+            margin-top: ${isGbStandard ? '0.008in' : '0.015in'};
+            color: #374151;
+            font-size: ${isGbStandard ? '8.8pt' : '9.3pt'};
         }
 
         .cert-entry a {
@@ -343,7 +444,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         /* ── References ── */
         .references-note {
-            font-size: 9.5pt;
+            font-size: ${isGbStandard ? '8.8pt' : '9.5pt'};
             color: #374151;
             font-style: italic;
         }
@@ -353,7 +454,7 @@ document.addEventListener('DOMContentLoaded', function() {
             display: flex;
             align-items: flex-start;
             justify-content: space-between;
-            gap: 0.25in;
+            gap: ${isGbStandard ? '0.14in' : '0.25in'};
         }
 
         .header-text { flex: 1; min-width: 0; }
@@ -420,17 +521,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     <section>
         <h2>Professional Experience</h2>
-        ${experiences.map(item => `
-            <div class="entry">
-                <div class="entry-head">
-                    <h3>${escapeHtml(item.title)}</h3>
-                    <span class="date">${escapeHtml(item.date)}</span>
-                </div>
-                <p class="entry-org">${escapeHtml(item.company)}</p>
-                ${item.details.length ? `<ul>${item.details.map(d => `<li>${escapeHtml(d)}</li>`).join('')}</ul>` : ''}
-                ${item.tech.length ? `<p class="tech-line"><strong>Technologies:</strong> ${escapeHtml(item.tech.join(', '))}</p>` : ''}
-            </div>`).join('')}
+        ${experienceSectionMarkup}
     </section>
+
+    ${isGbStandard ? '<div class="page-break"></div>' : ''}
+
+    ${earlierExperienceMarkup}
 
     <section>
         <h2>Education</h2>
@@ -447,11 +543,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     <section>
         <h2>Certifications</h2>
-        ${certifications.map(item => {
-            const detailsClean = item.details.replace(/\s*·?\s*View Credential\s*$/i, '').trim();
-            const linkPart = item.link ? ` — <a href="${escapeHtml(item.link)}">${escapeHtml(item.link)}</a>` : '';
-            return `<p class="cert-entry"><strong>${escapeHtml(item.title)}</strong>${detailsClean ? ` — ${escapeHtml(detailsClean)}` : ''}${linkPart}</p>`;
-        }).join('')}
+        ${certificationsMarkup}
     </section>
 
     ${ukInfoMarkup}
@@ -680,6 +772,20 @@ document.addEventListener('DOMContentLoaded', function() {
                     </span>
                 </button>
 
+                <button data-mode="gb-standard" style="
+                    display:flex;align-items:flex-start;gap:0.9rem;
+                    width:100%;text-align:left;
+                    background:#f8fafc;border:2px solid #e2e8f0;border-radius:12px;
+                    padding:0.9rem 1rem;cursor:pointer;margin-bottom:0.65rem;
+                    font-family:inherit;transition:border-color 0.15s,background 0.15s;
+                ">
+                    <span style="font-size:1.5rem;line-height:1;margin-top:0.1rem;">&#127468;&#127463;</span>
+                    <span>
+                        <span style="display:block;font-size:0.92rem;font-weight:700;color:#1e293b;margin-bottom:0.2rem;">GB Standard (2 Pages)</span>
+                        <span style="display:block;font-size:0.8rem;color:#64748b;line-height:1.45;">UK-focused two-page layout with concise additional experience. Best for GB recruiter submissions.</span>
+                    </span>
+                </button>
+
                 <button data-mode="default" style="
                     display:flex;align-items:flex-start;gap:0.9rem;
                     width:100%;text-align:left;
@@ -796,7 +902,13 @@ document.addEventListener('DOMContentLoaded', function() {
             this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exporting...';
 
             try {
-                const label = choice === 'uk' ? 'UK Standard CV' : choice === 'ph' ? 'PH CV' : 'Full CV';
+                const label = choice === 'uk'
+                    ? 'UK Standard CV'
+                    : choice === 'gb-standard'
+                    ? 'GB Standard CV (2 Pages)'
+                    : choice === 'ph'
+                    ? 'PH CV'
+                    : 'Full CV';
                 showNotification(`Opening ${label} \u2014 choose Save as PDF to export.`);
                 await openProfessionalPrintView({ mode: choice });
             } finally {
