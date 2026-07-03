@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Julius Oliver C. Nicolas - CV v7.3.26</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .version-toolbar {
+            position: sticky;
+            top: 0;
+            z-index: 1200;
+            background: rgba(248, 250, 252, 0.95);
+            border-bottom: 1px solid var(--border-color);
+            backdrop-filter: blur(8px);
+        }
+
+        .version-toolbar-inner {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 0.8rem 1rem;
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.65rem;
+            flex-wrap: wrap;
+        }
+
+        .version-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.55rem 0.85rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            text-decoration: none;
+            background: #fff;
+            color: var(--text-primary);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .version-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .version-btn-primary {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: #fff;
+        }
+
+        .version-btn-primary:hover {
+            color: #fff;
+            background: var(--primary-dark);
+            border-color: var(--primary-dark);
+        }
+
+        .quote-note {
+            margin-top: 0.6rem;
+            padding: 0.75rem 1rem;
+            border-left: 3px solid var(--accent-color);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-style: italic;
+        }
+
+        .compact-list {
+            margin-left: 1.1rem;
+        }
+
+        .compact-list li {
+            margin-bottom: 0.35rem;
+        }
+
+        .visa-highlight {
+            margin-top: 0.7rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.38rem 0.7rem;
+            border-radius: 999px;
+            background: #ecfeff;
+            border: 1px solid #99f6e4;
+            color: #0f766e;
+            font-weight: 700;
+            font-size: 0.86rem;
+            letter-spacing: 0.02em;
+        }
+
+        @media print {
+            @page {
+                size: A4;
+                margin: 14mm;
+            }
+
+            .version-toolbar,
+            .view-mode-switcher {
+                display: none !important;
+            }
+
+            body,
+            body[data-view-mode="professional"] {
+                background: #fff;
+                color: #000;
+                font-family: "Segoe UI", Arial, sans-serif;
+                font-size: 10.5pt;
+                line-height: 1.35;
+            }
+
+            .container,
+            body[data-view-mode="professional"] .container {
+                margin: 0;
+                box-shadow: none;
+                border: none;
+                max-width: 100%;
+            }
+
+            .header,
+            body[data-view-mode="professional"] .header {
+                background: #fff;
+                color: #000;
+                border-bottom: 1px solid #000;
+                padding: 0 0 10px;
+            }
+
+            .main-content,
+            body[data-view-mode="professional"] .main-content {
+                padding: 10px 0 0;
+            }
+
+            .section,
+            body[data-view-mode="professional"] .section {
+                margin-bottom: 12px;
+                break-inside: avoid;
+            }
+
+            .section-title,
+            body[data-view-mode="professional"] .section-title {
+                color: #000;
+                border-bottom: 1px solid #000;
+                font-size: 10pt;
+                letter-spacing: 0.04em;
+                margin-bottom: 8px;
+                padding-bottom: 4px;
+            }
+
+            .section-title::after,
+            body[data-view-mode="professional"] .section-title::after {
+                display: none !important;
+                content: none !important;
+            }
+
+            .experience-item,
+            .education-item,
+            .certification-item,
+            .personal-info-item,
+            .skill-category,
+            body[data-view-mode="professional"] .experience-item,
+            body[data-view-mode="professional"] .education-item,
+            body[data-view-mode="professional"] .certification-item,
+            body[data-view-mode="professional"] .personal-info-item,
+            body[data-view-mode="professional"] .skill-category {
+                background: transparent;
+                border: none;
+                box-shadow: none;
+                padding: 0;
+                margin-bottom: 8px;
+            }
+
+            .personal-info-item::before,
+            body[data-view-mode="professional"] .personal-info-item::before {
+                display: none !important;
+                content: none !important;
+                background: none !important;
+                width: 0 !important;
+            }
+
+            .quote-note,
+            .skill-tag,
+            .tech-tag {
+                background: transparent;
+                border: none;
+                padding: 0;
+                margin: 0;
+                color: #000;
+                font-style: normal;
+            }
+
+            .skills-grid,
+            .certifications-grid,
+            .personal-info-grid,
+            .contact-info,
+            body[data-view-mode="professional"] .skills-grid,
+            body[data-view-mode="professional"] .certifications-grid,
+            body[data-view-mode="professional"] .personal-info-grid,
+            body[data-view-mode="professional"] .contact-info {
+                display: block;
+                gap: 0;
+            }
+
+            .experience-header,
+            .education-header {
+                margin-bottom: 4px;
+            }
+
+            .experience-details,
+            .compact-list {
+                margin: 4px 0 8px 18px;
+            }
+
+            .experience-details li,
+            .compact-list li {
+                margin-bottom: 2px;
+                color: #000;
+            }
+
+            i,
+            .profile-photo {
+                display: none !important;
+            }
+
+            a {
+                color: inherit;
+                text-decoration: none;
+
+            .visa-highlight {
+                display: block;
+                margin-top: 4px;
+                padding: 0;
+                border: none;
+                background: transparent;
+                color: #000;
+                font-size: 10pt;
+                font-weight: 700;
+                letter-spacing: 0;
+            }
+            }
+
+            h1, h2, h3, h4,
+            p,
+            li,
+            span,
+            strong {
+                color: #000 !important;
+            }
+
+            h1 {
+                font-size: 19pt;
+                margin-bottom: 4px;
+            }
+
+            h3 {
+                font-size: 11pt;
+                margin-bottom: 2px;
+            }
+
+            p {
+                margin: 2px 0 5px;
+            }
+
+            .additional-info-section .personal-info-item,
+            body[data-view-mode="professional"] .additional-info-section .personal-info-item {
+                border: none !important;
+                border-radius: 0 !important;
+                padding: 0 !important;
+                margin-bottom: 6px !important;
+                page-break-inside: avoid;
+            }
+
+            .additional-info-section .personal-info-item strong,
+            .additional-info-section .personal-info-item span {
+                display: inline;
+            }
+
+            .additional-info-section .personal-info-item strong::after {
+                content: " ";
+            }
+        }
+    </style>
+</head>
+<body data-view-mode="professional">
+    <div class="version-toolbar">
+        <div class="version-toolbar-inner">
+            <a class="version-btn" href="index.html"><i class="fas fa-arrow-left"></i>Back to current version</a>
+            <button class="version-btn version-btn-primary" type="button" onclick="window.print()"><i class="fas fa-print"></i>Print CV</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <div class="profile-info">
+                    <h1 class="name">Julius Oliver C. Nicolas</h1>
+                    <p class="title">Senior Software Engineer (.NET / Azure) | UK Partner Visa (Dependent) | No Sponsorship Required</p>
+                    <p class="tagline">Senior Software Engineer with 15+ years of experience delivering scalable, cloud-ready solutions across airline, finance, insurance, and enterprise platforms.</p>
+                </div>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Helston, Cornwall, UK</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>juliuscnicolas@gmail.com</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <span>+44 7538 745668</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fab fa-linkedin"></i>
+                        <a href="https://linkedin.com/in/juliusolivernicolas" target="_blank" rel="noopener noreferrer">linkedin.com/in/juliusolivernicolas</a>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fab fa-github"></i>
+                        <a href="https://github.com/juliuscnicolas" target="_blank" rel="noopener noreferrer">github.com/juliuscnicolas</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <section class="section">
+                <h2 class="section-title">Professional Summary</h2>
+                <div class="section-content">
+                    <p class="summary-text">
+                        Senior Software Engineer with <strong>15+ years</strong> of experience delivering scalable, cloud-ready solutions across airline, finance, insurance, and enterprise platforms. Specialized in <strong>C#/.NET</strong>, <strong>RESTful API engineering</strong>, <strong>Azure cloud services</strong>, and <strong>CI/CD automation</strong>. Proven ability to lead Agile teams, modernize legacy systems, and improve production reliability. Strong advocate of <strong>Clean Architecture</strong>, <strong>SOLID</strong>, automated testing, and AI-assisted engineering using GitHub Copilot.
+                    </p>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">Core Skills</h2>
+                <div class="section-content">
+                    <div class="skills-grid">
+                        <div class="skill-category">
+                            <h4>Backend & Cloud</h4>
+                            <div class="skill-tags">
+                                <span class="skill-tag">C#</span>
+                                <span class="skill-tag">.NET Core</span>
+                                <span class="skill-tag">ASP.NET Core</span>
+                                <span class="skill-tag">REST APIs</span>
+                                <span class="skill-tag">Microservices</span>
+                                <span class="skill-tag">Azure App Service</span>
+                                <span class="skill-tag">Azure Functions</span>
+                                <span class="skill-tag">APIM</span>
+                                <span class="skill-tag">Azure Key Vault</span>
+                                <span class="skill-tag">Azure Pipelines</span>
+                                <span class="skill-tag">Docker</span>
+                                <span class="skill-tag">Kubernetes</span>
+                            </div>
+                        </div>
+                        <div class="skill-category">
+                            <h4>Frontend</h4>
+                            <div class="skill-tags">
+                                <span class="skill-tag">React</span>
+                                <span class="skill-tag">Angular</span>
+                                <span class="skill-tag">AngularJS</span>
+                                <span class="skill-tag">Vue.js</span>
+                                <span class="skill-tag">HTML5</span>
+                                <span class="skill-tag">CSS</span>
+                                <span class="skill-tag">JavaScript</span>
+                            </div>
+                        </div>
+                        <div class="skill-category">
+                            <h4>Databases</h4>
+                            <div class="skill-tags">
+                                <span class="skill-tag">SQL Server</span>
+                                <span class="skill-tag">PostgreSQL</span>
+                                <span class="skill-tag">MongoDB</span>
+                                <span class="skill-tag">Oracle</span>
+                                <span class="skill-tag">MySQL</span>
+                                <span class="skill-tag">Progress OpenEdge</span>
+                            </div>
+                        </div>
+                        <div class="skill-category">
+                            <h4>Testing</h4>
+                            <div class="skill-tags">
+                                <span class="skill-tag">xUnit</span>
+                                <span class="skill-tag">NUnit</span>
+                                <span class="skill-tag">MSTest</span>
+                                <span class="skill-tag">Jest</span>
+                                <span class="skill-tag">Cypress</span>
+                                <span class="skill-tag">Moq</span>
+                            </div>
+                        </div>
+                        <div class="skill-category">
+                            <h4>Tools</h4>
+                            <div class="skill-tags">
+                                <span class="skill-tag">Git</span>
+                                <span class="skill-tag">Azure DevOps</span>
+                                <span class="skill-tag">Bitbucket</span>
+                                <span class="skill-tag">JIRA</span>
+                                <span class="skill-tag">PowerShell</span>
+                                <span class="skill-tag">Umbraco</span>
+                                <span class="skill-tag">Contentstack</span>
+                                <span class="skill-tag">Optimizely</span>
+                            </div>
+                        </div>
+                        <div class="skill-category">
+                            <h4>AI Tools</h4>
+                            <div class="skill-tags">
+                                <span class="skill-tag">GitHub Copilot</span>
+                                <span class="skill-tag">Cursor</span>
+                                <span class="skill-tag">Speckit</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">Professional Experience</h2>
+                <div class="section-content">
+                    <div class="experience-item">
+                        <div class="experience-header">
+                            <div class="experience-title">
+                                <h3>Lead Developer (Promoted from Software Engineer)</h3>
+                                <p class="company">Cognizant Technology Solutions Philippines - Alaska Airlines</p>
+                            </div>
+                            <div class="experience-date">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>Oct 2023 - Jan 2026</span>
+                            </div>
+                        </div>
+                        <p class="quote-note">"Progressed from Software Engineer to Lead Developer while supporting Alaska Airlines' Loyalty Rewards platform."</p>
+                        <ul class="experience-details">
+                            <li>Led a Loyalty Rewards POD delivering roadmap features for the 2026 program.</li>
+                            <li>Improved platform stability by enhancing API reliability and resolving production issues.</li>
+                            <li>Strengthened release quality through CI/CD improvements and automated testing.</li>
+                            <li>Collaborated with US-based architects to modernize loyalty services and integrations.</li>
+                        </ul>
+                    </div>
+
+                    <div class="experience-item">
+                        <div class="experience-header">
+                            <div class="experience-title">
+                                <h3>Consultant / Developer</h3>
+                                <p class="company">Magenic Manila (Cognizant) - Domino's Pizza</p>
+                            </div>
+                            <div class="experience-date">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>Jul 2022 - Sept 2023</span>
+                            </div>
+                        </div>
+                        <p class="quote-note">"Delivered high-priority internal applications supporting business-critical workflows."</p>
+                        <ul class="experience-details">
+                            <li>Built internal workflow applications improving operational efficiency.</li>
+                            <li>Increased code quality through peer reviews and expanded automated test coverage.</li>
+                            <li>Supported deployment activities ensuring stable releases across distributed teams.</li>
+                        </ul>
+                    </div>
+
+                    <div class="experience-item">
+                        <div class="experience-header">
+                            <div class="experience-title">
+                                <h3>Senior Consultant / Developer</h3>
+                                <p class="company">Magenic Manila (Cognizant) - Ensek</p>
+                            </div>
+                            <div class="experience-date">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>Jan 2022 - Jun 2022</span>
+                            </div>
+                        </div>
+                        <p class="quote-note">"Built AngularJS frontends and .NET APIs as a full-stack developer in Agile delivery teams."</p>
+                        <ul class="experience-details">
+                            <li>Delivered full-stack features across AngularJS and .NET APIs.</li>
+                            <li>Supported integration and deployment activities for reliable production releases.</li>
+                        </ul>
+                    </div>
+
+                    <div class="experience-item">
+                        <div class="experience-header">
+                            <div class="experience-title">
+                                <h3>Consultant / Developer</h3>
+                                <p class="company">Magenic Manila - Broadridge</p>
+                            </div>
+                            <div class="experience-date">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>May 2021 - Dec 2021</span>
+                            </div>
+                        </div>
+                        <p class="quote-note">"Maintained and enhanced enterprise financial systems supporting core business operations."</p>
+                        <ul class="experience-details">
+                            <li>Improved system stability through performance tuning and database fixes.</li>
+                            <li>Delivered targeted enhancements to support financial operations.</li>
+                        </ul>
+                    </div>
+
+                    <div class="experience-item">
+                        <div class="experience-header">
+                            <div class="experience-title">
+                                <h3>Senior Software Engineer</h3>
+                                <p class="company">Cloud Employee - Leisure Insurance Company</p>
+                            </div>
+                            <div class="experience-date">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>Aug 2019 - Feb 2020</span>
+                            </div>
+                        </div>
+                        <p class="quote-note">"Developed tenant-based insurance applications using Umbraco CMS and AngularJS."</p>
+                        <ul class="experience-details">
+                            <li>Built multi-tenant insurance applications using Umbraco + AngularJS.</li>
+                            <li>Managed integration, testing, and deployment activities.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">Additional Experience (Condensed)</h2>
+                <div class="section-content">
+                    <div class="experience-item">
+                        <p><strong>2010 - 2019 | Multiple Engineering Roles (Finance, Insurance, Enterprise)</strong><br>PetSure Services Inc · Yondu (EastWest Bank) · Flexisource IT · Oak Drive Ventures · Non-Life Insurance Company · Consulting Company</p>
+                        <ul class="compact-list">
+                            <li>"Built multi-tenant web applications and improved workflow automation."</li>
+                            <li>"Delivered and maintained applications for banking, finance, and insurance clients."</li>
+                            <li>"Developed loan and pension systems for retired police officers, firefighters, and teachers."</li>
+                        </ul>
+                        <p>Focus areas: multi-tenant systems, workflow automation, Progress 4GL applications, enterprise enhancements, database optimization, Agile collaboration.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">Education</h2>
+                <div class="section-content">
+                    <div class="education-item">
+                        <div class="education-header">
+                            <div class="education-title">
+                                <h3>Bachelor of Science in Information Technology</h3>
+                                <p class="university">University of the East - Manila</p>
+                            </div>
+                            <div class="education-date">
+                                <i class="fas fa-graduation-cap"></i>
+                                <span>2005 - 2010</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">Certifications</h2>
+                <div class="section-content">
+                    <div class="certifications-grid">
+                        <div class="certification-item">
+                            <i class="fas fa-certificate"></i>
+                            <div>
+                                <h4>AZ-900 - Microsoft Azure Fundamentals</h4>
+                                <p>Earned: Nov 22, 2020</p>
+                                <p>Credential ID: 1FC5C697F97C9C16</p>
+                            </div>
+                        </div>
+                        <div class="certification-item">
+                            <i class="fas fa-certificate"></i>
+                            <div>
+                                <h4>GH-300 - GitHub Foundations</h4>
+                                <p>Earned: Apr 29, 2026</p>
+                                <p>Expires: Apr 30, 2028</p>
+                                <p>Credential ID: 22FC4F4B3E213C0E</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section additional-info-section">
+                <h2 class="section-title">Additional Information</h2>
+                <div class="section-content">
+                    <div class="personal-info-grid">
+                        <div class="personal-info-item">
+                            <i class="fas fa-passport"></i>
+                            <div>
+                                <strong>Work Authorization:</strong>
+                                <span>UK Partner Visa (Dependent) - Eligible to work in the UK. No sponsorship required.</span>
+                            </div>
+                        </div>
+                        <div class="personal-info-item">
+                            <i class="fas fa-share-square"></i>
+                            <div>
+                                <strong>Verification:</strong>
+                                <span>Share code or eVisa copy upon request.</span>
+                            </div>
+                        </div>
+                        <div class="personal-info-item">
+                            <i class="fas fa-calendar-check"></i>
+                            <div>
+                                <strong>Availability:</strong>
+                                <span>July 2026</span>
+                            </div>
+                        </div>
+                        <div class="personal-info-item">
+                            <i class="fas fa-user-friends"></i>
+                            <div>
+                                <strong>References:</strong>
+                                <span>Available upon request.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
