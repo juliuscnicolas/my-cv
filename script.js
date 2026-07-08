@@ -928,6 +928,56 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    function addNewVersionButton() {
+        const newVersionButton = document.createElement('button');
+        newVersionButton.className = 'new-version-button';
+        newVersionButton.title = 'Open the ATS-friendly CV version';
+        newVersionButton.innerHTML = '<i class="fas fa-arrow-up-right-from-square"></i> Open ATS CV';
+        newVersionButton.style.cssText = `
+            position: fixed;
+            right: 20px;
+            bottom: 74px;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            border: none;
+            border-radius: 999px;
+            background: #0f766e;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+        `;
+
+        newVersionButton.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-2px)';
+            this.style.boxShadow = 'var(--shadow-lg)';
+        });
+
+        newVersionButton.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = 'var(--shadow-md)';
+        });
+
+        newVersionButton.addEventListener('click', function() {
+            window.location.href = 'index-v2.html';
+        });
+
+        document.body.appendChild(newVersionButton);
+
+        window.addEventListener('beforeprint', function() {
+            newVersionButton.style.display = 'none';
+        });
+
+        window.addEventListener('afterprint', function() {
+            newVersionButton.style.display = 'flex';
+        });
+    }
+
     // Legacy stubs kept for html2canvas ignoreElements compatibility
     function addPrintButton() {
         const printButton = document.createElement('button');
@@ -1113,7 +1163,7 @@ document.addEventListener('DOMContentLoaded', function() {
     async function generatePDFSimple() {
         return new Promise((resolve) => {
             // Hide buttons during print
-            const buttons = document.querySelectorAll('.print-button, .download-button, .save-pdf-button, .fab-container, .export-button, .view-mode-switcher');
+            const buttons = document.querySelectorAll('.print-button, .download-button, .save-pdf-button, .fab-container, .export-button, .new-version-button, .view-mode-switcher');
             buttons.forEach(btn => btn.style.display = 'none');
             
             // Add print-optimized styles temporarily
@@ -1235,7 +1285,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Hide action buttons during capture
-        const buttons = document.querySelectorAll('.print-button, .download-button, .save-pdf-button, .notification, .fab-container, .view-mode-switcher');
+        const buttons = document.querySelectorAll('.print-button, .download-button, .save-pdf-button, .notification, .fab-container, .new-version-button, .view-mode-switcher');
         buttons.forEach(btn => btn.style.display = 'none');
 
         // Store original scroll position
@@ -1376,7 +1426,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Hide action buttons during capture
-        const buttons = document.querySelectorAll('.print-button, .download-button, .save-pdf-button, .notification, .fab-container, .view-mode-switcher');
+        const buttons = document.querySelectorAll('.print-button, .download-button, .save-pdf-button, .notification, .fab-container, .new-version-button, .view-mode-switcher');
         buttons.forEach(btn => btn.style.display = 'none');
 
         // Store original scroll position
@@ -1601,6 +1651,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize features
     initializeViewModeToggle();
     addExportButton();
+    addNewVersionButton();
     addScrollProgress();
     
     // Add typing effect with delay
