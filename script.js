@@ -857,6 +857,107 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    function showVersionChoiceModal() {
+        return new Promise((resolve) => {
+            const backdrop = document.createElement('div');
+            backdrop.style.cssText = `
+                position: fixed;
+                inset: 0;
+                background: rgba(15, 23, 42, 0.55);
+                z-index: 10000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                backdrop-filter: blur(4px);
+            `;
+
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                background: #ffffff;
+                border-radius: 16px;
+                padding: 2rem;
+                width: 100%;
+                max-width: 420px;
+                margin: 1rem;
+                box-shadow: 0 25px 50px -12px rgba(0,0,0,0.35);
+                font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            `;
+
+            modal.innerHTML = `
+                <p style="font-size:1.1rem;font-weight:700;color:#1e293b;margin:0 0 0.3rem;">Choose a CV Version</p>
+                <p style="font-size:0.875rem;color:#64748b;margin:0 0 1.25rem;">Select the version you want to open:</p>
+
+                <button data-mode="non-it" style="
+                    display:flex;align-items:flex-start;gap:0.9rem;
+                    width:100%;text-align:left;
+                    background:#f8fafc;border:2px solid #e2e8f0;border-radius:12px;
+                    padding:0.9rem 1rem;cursor:pointer;margin-bottom:0.65rem;
+                    font-family:inherit;transition:border-color 0.15s,background 0.15s;
+                ">
+                    <span style="font-size:1.5rem;line-height:1;margin-top:0.1rem;">&#128196;</span>
+                    <span>
+                        <span style="display:block;font-size:0.92rem;font-weight:700;color:#1e293b;margin-bottom:0.2rem;">Non-IT Role CV</span>
+                        <span style="display:block;font-size:0.8rem;color:#64748b;line-height:1.45;">A version focused on transferable skills, communication, and operations roles.</span>
+                    </span>
+                </button>
+
+                <button data-mode="ats" style="
+                    display:flex;align-items:flex-start;gap:0.9rem;
+                    width:100%;text-align:left;
+                    background:#f8fafc;border:2px solid #e2e8f0;border-radius:12px;
+                    padding:0.9rem 1rem;cursor:pointer;
+                    font-family:inherit;transition:border-color 0.15s,background 0.15s;
+                ">
+                    <span style="font-size:1.5rem;line-height:1;margin-top:0.1rem;">&#127919;</span>
+                    <span>
+                        <span style="display:block;font-size:0.92rem;font-weight:700;color:#1e293b;margin-bottom:0.2rem;">ATS Main CV</span>
+                        <span style="display:block;font-size:0.8rem;color:#64748b;line-height:1.45;">The main recruiter-friendly version for software and technical roles.</span>
+                    </span>
+                </button>
+
+                <button data-mode="cancel" style="
+                    display:block;width:100%;margin-top:0.9rem;
+                    background:none;border:none;font-size:0.82rem;
+                    color:#94a3b8;cursor:pointer;padding:0.4rem;
+                    font-family:inherit;transition:color 0.15s;
+                ">Cancel</button>
+            `;
+
+            modal.querySelectorAll('button[data-mode]').forEach(btn => {
+                btn.addEventListener('mouseenter', function() {
+                    if (this.disabled) return;
+                    if (this.dataset.mode !== 'cancel') {
+                        this.style.borderColor = '#2563eb';
+                        this.style.background = '#eff6ff';
+                    } else {
+                        this.style.color = '#475569';
+                    }
+                });
+                btn.addEventListener('mouseleave', function() {
+                    if (this.disabled) return;
+                    if (this.dataset.mode !== 'cancel') {
+                        this.style.borderColor = '#e2e8f0';
+                        this.style.background = '#f8fafc';
+                    } else {
+                        this.style.color = '#94a3b8';
+                    }
+                });
+                btn.addEventListener('click', () => {
+                    if (btn.disabled) return;
+                    backdrop.remove();
+                    resolve(btn.dataset.mode === 'cancel' ? null : btn.dataset.mode);
+                });
+            });
+
+            backdrop.addEventListener('click', (e) => {
+                if (e.target === backdrop) { backdrop.remove(); resolve(null); }
+            });
+
+            backdrop.appendChild(modal);
+            document.body.appendChild(backdrop);
+        });
+    }
+
     function addExportButton() {
         const exportButton = document.createElement('button');
         exportButton.className = 'export-button';
@@ -925,6 +1026,63 @@ document.addEventListener('DOMContentLoaded', function() {
 
         window.addEventListener('afterprint', function() {
             exportButton.style.display = 'flex';
+        });
+    }
+
+    function addNewVersionButton() {
+        const newVersionButton = document.createElement('button');
+        newVersionButton.className = 'new-version-button';
+        newVersionButton.title = 'Open CV versions';
+        newVersionButton.innerHTML = '<i class="fas fa-layer-group"></i> Versions';
+        newVersionButton.style.cssText = `
+            position: fixed;
+            right: 20px;
+            bottom: 74px;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            border: none;
+            border-radius: 999px;
+            background: #0f766e;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+        `;
+
+        newVersionButton.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-2px)';
+            this.style.boxShadow = 'var(--shadow-lg)';
+        });
+
+        newVersionButton.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = 'var(--shadow-md)';
+        });
+
+        newVersionButton.addEventListener('click', function() {
+            showVersionChoiceModal().then(choice => {
+                if (!choice) return;
+                if (choice === 'non-it') {
+                    window.location.href = 'index-non-it.html';
+                } else if (choice === 'ats') {
+                    window.location.href = 'index-ats.html';
+                }
+            });
+        });
+
+        document.body.appendChild(newVersionButton);
+
+        window.addEventListener('beforeprint', function() {
+            newVersionButton.style.display = 'none';
+        });
+
+        window.addEventListener('afterprint', function() {
+            newVersionButton.style.display = 'flex';
         });
     }
 
@@ -1113,7 +1271,7 @@ document.addEventListener('DOMContentLoaded', function() {
     async function generatePDFSimple() {
         return new Promise((resolve) => {
             // Hide buttons during print
-            const buttons = document.querySelectorAll('.print-button, .download-button, .save-pdf-button, .fab-container, .export-button, .view-mode-switcher');
+            const buttons = document.querySelectorAll('.print-button, .download-button, .save-pdf-button, .fab-container, .export-button, .new-version-button, .view-mode-switcher');
             buttons.forEach(btn => btn.style.display = 'none');
             
             // Add print-optimized styles temporarily
@@ -1235,7 +1393,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Hide action buttons during capture
-        const buttons = document.querySelectorAll('.print-button, .download-button, .save-pdf-button, .notification, .fab-container, .view-mode-switcher');
+        const buttons = document.querySelectorAll('.print-button, .download-button, .save-pdf-button, .notification, .fab-container, .new-version-button, .view-mode-switcher');
         buttons.forEach(btn => btn.style.display = 'none');
 
         // Store original scroll position
@@ -1376,7 +1534,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Hide action buttons during capture
-        const buttons = document.querySelectorAll('.print-button, .download-button, .save-pdf-button, .notification, .fab-container, .view-mode-switcher');
+        const buttons = document.querySelectorAll('.print-button, .download-button, .save-pdf-button, .notification, .fab-container, .new-version-button, .view-mode-switcher');
         buttons.forEach(btn => btn.style.display = 'none');
 
         // Store original scroll position
@@ -1601,6 +1759,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize features
     initializeViewModeToggle();
     addExportButton();
+    addNewVersionButton();
     addScrollProgress();
     
     // Add typing effect with delay
