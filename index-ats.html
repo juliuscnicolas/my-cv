@@ -1,38 +1,296 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Julius Oliver C. Nicolas - Professional CV</title>
+    <title>Julius Oliver C. Nicolas - CV v7.8.26</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .version-toolbar {
+            position: sticky;
+            top: 0;
+            z-index: 1200;
+            background: rgba(248, 250, 252, 0.95);
+            border-bottom: 1px solid var(--border-color);
+            backdrop-filter: blur(8px);
+        }
+
+        .version-toolbar-inner {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 0.8rem 1rem;
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.65rem;
+            flex-wrap: wrap;
+        }
+
+        .version-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.55rem 0.85rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            text-decoration: none;
+            background: #fff;
+            color: var(--text-primary);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .version-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .version-btn-primary {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: #fff;
+        }
+
+        .version-btn-primary:hover {
+            color: #fff;
+            background: var(--primary-dark);
+            border-color: var(--primary-dark);
+        }
+
+        .quote-note {
+            margin-top: 0.6rem;
+            padding: 0.75rem 1rem;
+            border-left: 3px solid var(--accent-color);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-style: italic;
+        }
+
+        .compact-list {
+            margin-left: 1.1rem;
+        }
+
+        .compact-list li {
+            margin-bottom: 0.35rem;
+        }
+
+        .visa-highlight {
+            margin-top: 0.7rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.38rem 0.7rem;
+            border-radius: 999px;
+            background: #ecfeff;
+            border: 1px solid #99f6e4;
+            color: #0f766e;
+            font-weight: 700;
+            font-size: 0.86rem;
+            letter-spacing: 0.02em;
+        }
+
+        @media print {
+            @page {
+                size: A4;
+                margin: 14mm;
+            }
+
+            .version-toolbar,
+            .view-mode-switcher {
+                display: none !important;
+            }
+
+            body,
+            body[data-view-mode="professional"] {
+                background: #fff;
+                color: #000;
+                font-family: "Segoe UI", Arial, sans-serif;
+                font-size: 10.5pt;
+                line-height: 1.35;
+            }
+
+            .container,
+            body[data-view-mode="professional"] .container {
+                margin: 0;
+                box-shadow: none;
+                border: none;
+                max-width: 100%;
+            }
+
+            .header,
+            body[data-view-mode="professional"] .header {
+                background: #fff;
+                color: #000;
+                border-bottom: 1px solid #000;
+                padding: 0 0 10px;
+            }
+
+            .main-content,
+            body[data-view-mode="professional"] .main-content {
+                padding: 10px 0 0;
+            }
+
+            .section,
+            body[data-view-mode="professional"] .section {
+                margin-bottom: 12px;
+                break-inside: avoid;
+            }
+
+            .section-title,
+            body[data-view-mode="professional"] .section-title {
+                color: #000;
+                border-bottom: 1px solid #000;
+                font-size: 10pt;
+                letter-spacing: 0.04em;
+                margin-bottom: 8px;
+                padding-bottom: 4px;
+            }
+
+            .section-title::after,
+            body[data-view-mode="professional"] .section-title::after {
+                display: none !important;
+                content: none !important;
+            }
+
+            .experience-item,
+            .education-item,
+            .certification-item,
+            .personal-info-item,
+            .skill-category,
+            body[data-view-mode="professional"] .experience-item,
+            body[data-view-mode="professional"] .education-item,
+            body[data-view-mode="professional"] .certification-item,
+            body[data-view-mode="professional"] .personal-info-item,
+            body[data-view-mode="professional"] .skill-category {
+                background: transparent;
+                border: none;
+                box-shadow: none;
+                padding: 0;
+                margin-bottom: 8px;
+            }
+
+            .personal-info-item::before,
+            body[data-view-mode="professional"] .personal-info-item::before {
+                display: none !important;
+                content: none !important;
+                background: none !important;
+                width: 0 !important;
+            }
+
+            .quote-note,
+            .skill-tag,
+            .tech-tag {
+                background: transparent;
+                border: none;
+                padding: 0;
+                margin: 0;
+                color: #000;
+                font-style: normal;
+            }
+
+            .skills-grid,
+            .certifications-grid,
+            .personal-info-grid,
+            .contact-info,
+            body[data-view-mode="professional"] .skills-grid,
+            body[data-view-mode="professional"] .certifications-grid,
+            body[data-view-mode="professional"] .personal-info-grid,
+            body[data-view-mode="professional"] .contact-info {
+                display: block;
+                gap: 0;
+            }
+
+            .experience-header,
+            .education-header {
+                margin-bottom: 4px;
+            }
+
+            .experience-details,
+            .compact-list {
+                margin: 4px 0 8px 18px;
+            }
+
+            .experience-details li,
+            .compact-list li {
+                margin-bottom: 2px;
+                color: #000;
+            }
+
+            i,
+            .profile-photo {
+                display: none !important;
+            }
+
+            a {
+                color: inherit;
+                text-decoration: none;
+            }
+
+            .visa-highlight {
+                display: block;
+                margin-top: 4px;
+                padding: 0;
+                border: none;
+                background: transparent;
+                color: #000;
+                font-size: 10pt;
+                font-weight: 700;
+                letter-spacing: 0;
+            }
+
+            h1, h2, h3, h4,
+            p,
+            li,
+            span,
+            strong {
+                color: #000 !important;
+            }
+
+            h1 {
+                font-size: 19pt;
+                margin-bottom: 4px;
+            }
+
+            h3 {
+                font-size: 11pt;
+                margin-bottom: 2px;
+            }
+
+            p {
+                margin: 2px 0 5px;
+            }
+        }
+    </style>
 </head>
 <body data-view-mode="professional">
+    <div class="version-toolbar">
+        <div class="version-toolbar-inner">
+            <a class="version-btn" href="index.html"><i class="fas fa-arrow-left"></i>Back to current version</a>
+            <button class="version-btn version-btn-primary" type="button" onclick="window.print()"><i class="fas fa-print"></i>Print</button>
+        </div>
+    </div>
+
     <div class="container">
-        <!-- Header Section -->
         <header class="header">
             <div class="header-content">
                 <div class="profile-info">
                     <h1 class="name">Julius Oliver C. Nicolas</h1>
-                    <p class="title">Senior Software Engineer | .NET / Azure | UK Partner Visa (Dependent) | No Sponsorship Required</p>
-                    <p class="tagline">Senior Software Engineer specializing in enterprise backend development, Azure cloud technologies, and production support, with additional experience in modern frontend frameworks including React and Angular.</p>
-                </div>
-                <div class="profile-photo">
-                    <img src="IMG_6928.jpg" alt="Julius Oliver C. Nicolas">
+                    <p class="title">Senior Software Engineer (.NET / Azure) | UK Partner Visa (Dependent) | No Sponsorship Required</p>
+                    <p class="tagline">Senior Software Engineer with 15+ years of experience delivering scalable, cloud-ready solutions across airline, finance, insurance, and enterprise platforms.</p>
                 </div>
                 <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Helston, Cornwall, UK</span>
+                    </div>
                     <div class="contact-item">
                         <i class="fas fa-envelope"></i>
                         <span>juliuscnicolas@gmail.com</span>
                     </div>
                     <div class="contact-item">
                         <i class="fas fa-phone"></i>
-                        <span>UK: +44 7538 745668</span>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span>Location: Helston, Cornwall, UK</span>
+                        <span>+44 7538 745668</span>
                     </div>
                     <div class="contact-item">
                         <i class="fab fa-linkedin"></i>
@@ -46,63 +304,103 @@
             </div>
         </header>
 
-        <!-- Main Content -->
         <main class="main-content">
-            <!-- Professional Summary -->
             <section class="section">
                 <h2 class="section-title">Professional Summary</h2>
                 <div class="section-content">
                     <p class="summary-text">
-                        Senior Software Engineer with 15+ years of experience delivering scalable solutions across airline, finance, insurance, and enterprise platforms. Practitioner of the Azure cloud ecosystem, with hands-on delivery in API engineering, cloud integration, DevOps, and production reliability. Specialized in C#/.NET, RESTful APIs, cloud-native systems, and modern frontend frameworks including React and Angular. Recognized for leading teams, resolving complex production issues, and improving system stability, performance, and release quality in Agile environments. Strong advocate of Clean Architecture, SOLID principles, automated testing, and CI/CD. Applies AI-assisted engineering using GitHub Copilot and spec-driven design to accelerate delivery while maintaining high quality and consistency.
+                        Senior Software Engineer with <strong>15+ years</strong> of experience delivering scalable, cloud-ready solutions across airline, finance, insurance, and enterprise platforms. Specialized in <strong>C#/.NET</strong>, <strong>RESTful API engineering</strong>, <strong>Azure cloud services</strong>, and <strong>CI/CD automation</strong>. Proven ability to lead Agile teams, modernize legacy systems, and improve production reliability. Strong advocate of <strong>Clean Architecture</strong>, <strong>SOLID</strong>, automated testing, and AI-assisted engineering using GitHub Copilot.
                     </p>
                 </div>
             </section>
 
-            <!-- Personal Information -->
             <section class="section">
-                <h2 class="section-title">Personal Information</h2>
+                <h2 class="section-title">Core Skills</h2>
                 <div class="section-content">
-                    <div class="personal-info-grid">
-                        <div class="personal-info-item">
-                            <i class="fas fa-flag"></i>
-                            <div>
-                                <strong>Nationality:</strong>
-                                <span>Filipino</span>
+                    <div class="skills-grid">
+                        <div class="skill-category">
+                            <h4>Backend & Cloud</h4>
+                            <div class="skill-tags">
+                                <span class="skill-tag">C#</span>
+                                <span class="skill-tag">.NET Core</span>
+                                <span class="skill-tag">ASP.NET Core</span>
+                                <span class="skill-tag">REST APIs</span>
+                                <span class="skill-tag">Microservices</span>
+                                <span class="skill-tag">Azure App Service</span>
+                                <span class="skill-tag">Azure Functions</span>
+                                <span class="skill-tag">APIM</span>
+                                <span class="skill-tag">Azure Key Vault</span>
+                                <span class="skill-tag">Azure Pipelines</span>
+                                <span class="skill-tag">Docker</span>
+                                <span class="skill-tag">Kubernetes</span>
                             </div>
                         </div>
-                        <div class="personal-info-item">
-                            <i class="fas fa-passport"></i>
-                            <div>
-                                <strong>Work Authorization:</strong>
-                                <span>UK Partner Visa (Dependent), eligible to work in the UK. Share code or eVisa copy upon request.</span>
+                        <div class="skill-category">
+                            <h4>Frontend</h4>
+                            <div class="skill-tags">
+                                <span class="skill-tag">React</span>
+                                <span class="skill-tag">Angular</span>
+                                <span class="skill-tag">AngularJS</span>
+                                <span class="skill-tag">Vue.js</span>
+                                <span class="skill-tag">HTML5</span>
+                                <span class="skill-tag">CSS</span>
+                                <span class="skill-tag">JavaScript</span>
                             </div>
                         </div>
-                        <div class="personal-info-item">
-                            <i class="fas fa-calendar-check"></i>
-                            <div>
-                                <strong>Availability:</strong>
-                                <span>Available from July 2026</span>
+                        <div class="skill-category">
+                            <h4>Databases</h4>
+                            <div class="skill-tags">
+                                <span class="skill-tag">SQL Server</span>
+                                <span class="skill-tag">PostgreSQL</span>
+                                <span class="skill-tag">MongoDB</span>
+                                <span class="skill-tag">Oracle</span>
+                                <span class="skill-tag">MySQL</span>
+                                <span class="skill-tag">Progress OpenEdge</span>
                             </div>
                         </div>
-                        <div class="personal-info-item">
-                            <i class="fas fa-briefcase"></i>
-                            <div>
-                                <strong>Work Setup / Mobility:</strong>
-                                <span>Based in Helston, Cornwall, UK, open to remote and location-based opportunities.</span>
+                        <div class="skill-category">
+                            <h4>Testing</h4>
+                            <div class="skill-tags">
+                                <span class="skill-tag">xUnit</span>
+                                <span class="skill-tag">NUnit</span>
+                                <span class="skill-tag">MSTest</span>
+                                <span class="skill-tag">Jest</span>
+                                <span class="skill-tag">Cypress</span>
+                                <span class="skill-tag">Moq</span>
+                            </div>
+                        </div>
+                        <div class="skill-category">
+                            <h4>Tools</h4>
+                            <div class="skill-tags">
+                                <span class="skill-tag">Git</span>
+                                <span class="skill-tag">Azure DevOps</span>
+                                <span class="skill-tag">Bitbucket</span>
+                                <span class="skill-tag">JIRA</span>
+                                <span class="skill-tag">PowerShell</span>
+                                <span class="skill-tag">Umbraco</span>
+                                <span class="skill-tag">Contentstack</span>
+                                <span class="skill-tag">Optimizely</span>
+                            </div>
+                        </div>
+                        <div class="skill-category">
+                            <h4>AI Tools</h4>
+                            <div class="skill-tags">
+                                <span class="skill-tag">GitHub Copilot</span>
+                                <span class="skill-tag">Cursor</span>
+                                <span class="skill-tag">Speckit</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- Experience -->
             <section class="section">
                 <h2 class="section-title">Professional Experience</h2>
                 <div class="section-content">
                     <div class="experience-item">
                         <div class="experience-header">
                             <div class="experience-title">
-                                <h3>Software Engineer -> Lead Developer</h3>
+                                <h3>Senior Software Engineer B3 (Promoted from Software Engineer B2)</h3>
                                 <p class="company">Cognizant Technology Solutions Philippines - Alaska Airlines</p>
                             </div>
                             <div class="experience-date">
@@ -111,7 +409,7 @@
                             </div>
                         </div>
                         <ul class="experience-details">
-                            <li>Progressed from Software Engineer to Lead Developer while supporting Alaska Airlines' Loyalty Rewards platform.</li>
+                            <li>Progressed from Software Engineer B2 to Lead Developer while supporting Alaska Airlines' Loyalty Rewards platform.</li>
                             <li>Led one Loyalty Rewards POD and delivered roadmap features and milestone updates for the 2026 program.</li>
                             <li>Built and maintained scalable C#/.NET APIs using Clean Architecture, improving maintainability, reliability, and release quality.</li>
                             <li>Optimized Azure Service Bus and Function App processing, increasing throughput while controlling operational cost.</li>
@@ -132,7 +430,7 @@
                     <div class="experience-item">
                         <div class="experience-header">
                             <div class="experience-title">
-                                <h3>Consultant / Developer</h3>
+                                <h3>Software Engineer B2 / Consultant</h3>
                                 <p class="company">Magenic Manila Inc. (Acquired by Cognizant) - Domino's Pizza</p>
                             </div>
                             <div class="experience-date">
@@ -157,7 +455,7 @@
                     <div class="experience-item">
                         <div class="experience-header">
                             <div class="experience-title">
-                                <h3>Senior Consultant / Developer</h3>
+                                <h3>Software Engineer / Consultant</h3>
                                 <p class="company">Magenic Manila Inc. (Acquired by Cognizant) - Ensek</p>
                             </div>
                             <div class="experience-date">
@@ -375,7 +673,6 @@
                 </div>
             </section>
 
-            <!-- Skills -->
             <section class="section">
                 <h2 class="section-title">Technical Skills</h2>
                 <div class="section-content">
@@ -469,7 +766,6 @@
                 </div>
             </section>
 
-            <!-- Education -->
             <section class="section">
                 <h2 class="section-title">Education</h2>
                 <div class="section-content">
@@ -491,7 +787,6 @@
                 </div>
             </section>
 
-            <!-- Certifications -->
             <section class="section">
                 <h2 class="section-title">Certifications</h2>
                 <div class="section-content">
@@ -513,7 +808,6 @@
                 </div>
             </section>
 
-            <!-- Projects -->
             <section class="section">
                 <h2 class="section-title">Featured Projects</h2>
                 <div class="section-content">
@@ -616,7 +910,6 @@
                 </div>
             </section>
 
-            <!-- Portfolio -->
             <section class="section">
                 <h2 class="section-title">Portfolio &amp; Open Source</h2>
                 <div class="section-content">
@@ -675,7 +968,6 @@
             </section>
         </main>
 
-        <!-- Footer -->
         <footer class="footer">
             <div class="footer-content">
                 <p>&copy; 2026 Julius Oliver C. Nicolas. All rights reserved.</p>

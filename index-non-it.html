@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Julius Oliver C. Nicolas - Non-IT Role CV</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .version-toolbar {
+            position: sticky;
+            top: 0;
+            z-index: 1200;
+            background: rgba(248, 250, 252, 0.95);
+            border-bottom: 1px solid var(--border-color);
+            backdrop-filter: blur(8px);
+        }
+
+        .version-toolbar-inner {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 0.8rem 1rem;
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.65rem;
+            flex-wrap: wrap;
+        }
+
+        .version-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.55rem 0.85rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            text-decoration: none;
+            background: #fff;
+            color: var(--text-primary);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .version-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .version-btn-primary {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: #fff;
+        }
+
+        .version-btn-primary:hover {
+            color: #fff;
+            background: var(--primary-dark);
+            border-color: var(--primary-dark);
+        }
+
+        @media print {
+            @page {
+                size: A4;
+                margin: 14mm;
+            }
+
+            .version-toolbar,
+            .view-mode-switcher,
+            .profile-photo,
+            i {
+                display: none !important;
+            }
+
+            body,
+            body[data-view-mode="professional"] {
+                background: #fff;
+                color: #000;
+                font-size: 10.5pt;
+                line-height: 1.35;
+            }
+
+            .container,
+            body[data-view-mode="professional"] .container {
+                margin: 0;
+                box-shadow: none;
+                border: none;
+                max-width: 100%;
+            }
+
+            .header,
+            body[data-view-mode="professional"] .header {
+                background: #fff;
+                color: #000;
+                border-bottom: 1px solid #000;
+                padding: 0 0 10px;
+            }
+
+            .main-content,
+            body[data-view-mode="professional"] .main-content {
+                padding: 10px 0 0;
+            }
+
+            .section,
+            body[data-view-mode="professional"] .section {
+                margin-bottom: 12px;
+                break-inside: avoid;
+            }
+
+            .section-title,
+            body[data-view-mode="professional"] .section-title {
+                color: #000;
+                border-bottom: 1px solid #000;
+                font-size: 10pt;
+                letter-spacing: 0.04em;
+                margin-bottom: 8px;
+                padding-bottom: 4px;
+            }
+
+            .section-title::after,
+            body[data-view-mode="professional"] .section-title::after {
+                display: none !important;
+                content: none !important;
+            }
+
+            .experience-item,
+            .education-item,
+            .certification-item,
+            .personal-info-item,
+            .skill-category,
+            body[data-view-mode="professional"] .experience-item,
+            body[data-view-mode="professional"] .education-item,
+            body[data-view-mode="professional"] .certification-item,
+            body[data-view-mode="professional"] .personal-info-item,
+            body[data-view-mode="professional"] .skill-category {
+                background: transparent;
+                border: none;
+                box-shadow: none;
+                padding: 0;
+                margin-bottom: 8px;
+            }
+
+            .skills-grid,
+            .certifications-grid,
+            .personal-info-grid,
+            .contact-info,
+            body[data-view-mode="professional"] .skills-grid,
+            body[data-view-mode="professional"] .certifications-grid,
+            body[data-view-mode="professional"] .personal-info-grid,
+            body[data-view-mode="professional"] .contact-info {
+                display: block;
+                gap: 0;
+            }
+
+            .experience-header,
+            .education-header {
+                margin-bottom: 4px;
+            }
+
+            .experience-details {
+                margin: 4px 0 8px 18px;
+            }
+
+            a {
+                color: inherit;
+                text-decoration: none;
+            }
+
+            h1, h2, h3, h4, p, li, span, strong {
+                color: #000 !important;
+            }
+
+            h1 {
+                font-size: 19pt;
+                margin-bottom: 4px;
+            }
+
+            h3 {
+                font-size: 11pt;
+                margin-bottom: 2px;
+            }
+
+            p {
+                margin: 2px 0 5px;
+            }
+        }
+    </style>
+</head>
+<body data-view-mode="professional">
+    <div class="version-toolbar">
+        <div class="version-toolbar-inner">
+            <a class="version-btn" href="index.html"><i class="fas fa-arrow-left"></i>Back to ATS Main CV</a>
+            <button class="version-btn version-btn-primary" type="button" onclick="window.print()"><i class="fas fa-print"></i>Print</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <div class="profile-info">
+                    <h1 class="name">Julius Oliver C. Nicolas</h1>
+                    <p class="title">Professional Profile for Non-IT Roles | UK Partner Visa (Dependent) | No Sponsorship Required</p>
+                    <p class="tagline">Reliable and adaptable professional with 15+ years of cross-industry experience delivering quality outcomes, improving team processes, and supporting operations in fast-paced environments.</p>
+                </div>
+                <div class="profile-photo">
+                    <img src="IMG_6928.jpg" alt="Julius Oliver C. Nicolas">
+                </div>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>juliuscnicolas@gmail.com</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <span>+44 7538 745668</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Helston, Cornwall, UK</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fab fa-linkedin"></i>
+                        <a href="https://linkedin.com/in/juliusolivernicolas" target="_blank" rel="noopener noreferrer">linkedin.com/in/juliusolivernicolas</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <section class="section">
+                <h2 class="section-title">Professional Summary</h2>
+                <div class="section-content">
+                    <p class="summary-text">Experienced professional with strong communication, coordination, and problem-solving skills developed through roles in airline, finance, insurance, and enterprise settings. Known for handling time-sensitive work, supporting stakeholders, improving workflow quality, and delivering consistent results. Brings a practical, detail-oriented approach to customer-facing and operational roles, with a strong mindset for accountability and continuous improvement.</p>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">Core Strengths</h2>
+                <div class="section-content">
+                    <div class="skills-grid">
+                        <div class="skill-category">
+                            <h4>Operations and Delivery</h4>
+                            <div class="skill-tags">
+                                <span class="skill-tag">Process Improvement</span>
+                                <span class="skill-tag">Task Prioritization</span>
+                                <span class="skill-tag">Quality Control</span>
+                                <span class="skill-tag">Deadline Management</span>
+                            </div>
+                        </div>
+                        <div class="skill-category">
+                            <h4>People and Communication</h4>
+                            <div class="skill-tags">
+                                <span class="skill-tag">Customer Support</span>
+                                <span class="skill-tag">Stakeholder Communication</span>
+                                <span class="skill-tag">Team Collaboration</span>
+                                <span class="skill-tag">Cross-cultural Coordination</span>
+                            </div>
+                        </div>
+                        <div class="skill-category">
+                            <h4>Administration</h4>
+                            <div class="skill-tags">
+                                <span class="skill-tag">Documentation</span>
+                                <span class="skill-tag">Reporting</span>
+                                <span class="skill-tag">Record Accuracy</span>
+                                <span class="skill-tag">Data Handling</span>
+                            </div>
+                        </div>
+                        <div class="skill-category">
+                            <h4>Work Habits</h4>
+                            <div class="skill-tags">
+                                <span class="skill-tag">Adaptability</span>
+                                <span class="skill-tag">Ownership</span>
+                                <span class="skill-tag">Reliability</span>
+                                <span class="skill-tag">Continuous Learning</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">Professional Experience</h2>
+                <div class="section-content">
+                    <div class="experience-item">
+                        <div class="experience-header">
+                            <div class="experience-title">
+                                <h3>Lead Developer (Promoted from Software Engineer)</h3>
+                                <p class="company">Cognizant Technology Solutions Philippines - Alaska Airlines</p>
+                            </div>
+                            <div class="experience-date">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>Oct 2023 - Jan 2026</span>
+                            </div>
+                        </div>
+                        <ul class="experience-details">
+                            <li>Led a team delivering high-priority workstreams with clear schedules and milestones.</li>
+                            <li>Coordinated with international stakeholders to align requirements and timelines.</li>
+                            <li>Improved reliability and service quality through structured process improvements.</li>
+                        </ul>
+                    </div>
+
+                    <div class="experience-item">
+                        <div class="experience-header">
+                            <div class="experience-title">
+                                <h3>Consultant / Developer</h3>
+                                <p class="company">Magenic Manila (Cognizant) - Domino's Pizza</p>
+                            </div>
+                            <div class="experience-date">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>Jul 2022 - Sept 2023</span>
+                            </div>
+                        </div>
+                        <ul class="experience-details">
+                            <li>Supported business-critical workflows and daily operational activities.</li>
+                            <li>Worked closely with teams to improve quality and reduce delivery risks.</li>
+                            <li>Helped ensure smooth releases through planning and handover support.</li>
+                        </ul>
+                    </div>
+
+                    <div class="experience-item">
+                        <div class="experience-header">
+                            <div class="experience-title">
+                                <h3>Senior Consultant / Developer</h3>
+                                <p class="company">Magenic Manila (Cognizant) - Ensek</p>
+                            </div>
+                            <div class="experience-date">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>Jan 2022 - Jun 2022</span>
+                            </div>
+                        </div>
+                        <ul class="experience-details">
+                            <li>Delivered tasks in agile teams while managing shifting priorities.</li>
+                            <li>Supported integration and rollout activities to keep services stable.</li>
+                        </ul>
+                    </div>
+
+                    <div class="experience-item">
+                        <div class="experience-header">
+                            <div class="experience-title">
+                                <h3>Additional Roles (2010 - 2021)</h3>
+                                <p class="company">Finance, Insurance, and Enterprise Organizations</p>
+                            </div>
+                            <div class="experience-date">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>2010 - 2021</span>
+                            </div>
+                        </div>
+                        <ul class="experience-details">
+                            <li>Delivered customer-focused and operational support across multiple industries.</li>
+                            <li>Contributed to process standardization, documentation, and quality checks.</li>
+                            <li>Handled production issues, follow-ups, and coordination with different teams.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">Education</h2>
+                <div class="section-content">
+                    <div class="education-item">
+                        <div class="education-header">
+                            <div class="education-title">
+                                <h3>Bachelor of Science in Information Technology</h3>
+                                <p class="university">University of the East - Manila</p>
+                            </div>
+                            <div class="education-date">
+                                <i class="fas fa-graduation-cap"></i>
+                                <span>2005 - 2010</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">Additional Information</h2>
+                <div class="section-content">
+                    <div class="personal-info-grid">
+                        <div class="personal-info-item">
+                            <i class="fas fa-passport"></i>
+                            <div>
+                                <strong>Work Authorization:</strong>
+                                <span>UK Partner Visa (Dependent) - Eligible to work in the UK. No sponsorship required.</span>
+                            </div>
+                        </div>
+                        <div class="personal-info-item">
+                            <i class="fas fa-calendar-check"></i>
+                            <div>
+                                <strong>Availability:</strong>
+                                <span>Available from July 2026</span>
+                            </div>
+                        </div>
+                        <div class="personal-info-item">
+                            <i class="fas fa-globe"></i>
+                            <div>
+                                <strong>Location:</strong>
+                                <span>Helston, Cornwall, UK</span>
+                            </div>
+                        </div>
+                        <div class="personal-info-item">
+                            <i class="fas fa-user-friends"></i>
+                            <div>
+                                <strong>References:</strong>
+                                <span>Available upon request.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
