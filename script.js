@@ -19,6 +19,225 @@ document.addEventListener('DOMContentLoaded', function() {
             .filter(Boolean);
     }
 
+    function escapeXml(value) {
+        return String(value ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&apos;');
+    }
+
+    function buildDocxBlocks() {
+        const blocks = [];
+
+        const addParagraph = (text, options = {}) => {
+            if (!text) return;
+            const normalizedText = String(text).replace(/\s+/g, ' ').trim();
+            if (!normalizedText) return;
+            blocks.push({
+                text: normalizedText,
+                style: options.style || 'Normal',
+                bold: options.bold || false,
+                italic: options.italic || false,
+                align: options.align || 'start',
+                bullet: options.bullet || false
+            });
+        };
+
+        const name = document.querySelector('.name')?.textContent.trim();
+        const title = document.querySelector('.title')?.textContent.trim();
+        const tagline = document.querySelector('.tagline')?.textContent.trim();
+
+        addParagraph(name, { style: 'Title', align: 'start', bold: true });
+        addParagraph(title, { style: 'Subtitle', align: 'start' });
+        addParagraph(tagline, { style: 'Normal', align: 'start', italic: true });
+
+        document.querySelectorAll('.contact-info .contact-item').forEach(item => {
+            const value = item.textContent.replace(/\s+/g, ' ').trim();
+            addParagraph(value, { style: 'Normal', align: 'start' });
+        });
+
+        document.querySelectorAll('.section').forEach(section => {
+            const heading = section.querySelector('.section-title')?.textContent.trim();
+            if (heading) addParagraph(heading, { style: 'Heading1', bold: true });
+
+            const content = section.querySelector('.section-content');
+            if (!content) return;
+
+            if (section.querySelector('.experience-item')) {
+                section.querySelectorAll('.experience-item').forEach(item => {
+                    const role = item.querySelector('.experience-title h3')?.textContent.trim();
+                    const company = item.querySelector('.company')?.textContent.trim();
+                    const date = item.querySelector('.experience-date span')?.textContent.trim();
+                    const combinedTitle = [role, company].filter(Boolean).join(' — ');
+                    if (combinedTitle) addParagraph(combinedTitle, { style: 'Heading2', bold: true });
+                    if (date) addParagraph(date, { style: 'Subtitle', italic: true });
+
+                    item.querySelectorAll('.experience-details li').forEach(listItem => {
+                        addParagraph(`• ${listItem.textContent.trim()}`, { style: 'Normal', bullet: true });
+                    });
+
+                    const tech = Array.from(item.querySelectorAll('.tech-stack .tech-tag'))
+                        .map(tag => tag.textContent.trim())
+                        .filter(Boolean)
+                        .join(', ');
+                    if (tech) addParagraph(`Technologies: ${tech}`, { style: 'Normal', italic: true });
+                });
+            } else if (section.querySelector('.skill-category')) {
+                section.querySelectorAll('.skill-category').forEach(category => {
+                    const headingText = category.querySelector('h4')?.textContent.trim();
+                    const values = Array.from(category.querySelectorAll('.skill-tag'))
+                        .map(tag => tag.textContent.trim())
+                        .filter(Boolean)
+                        .join(', ');
+                    if (headingText) addParagraph(`${headingText}: ${values}`, { style: 'Normal', bold: true });
+                });
+            } else if (section.querySelector('.education-item')) {
+                section.querySelectorAll('.education-item').forEach(item => {
+                    const degree = item.querySelector('.education-title h3')?.textContent.trim();
+                    const school = item.querySelector('.university')?.textContent.trim();
+                    const date = item.querySelector('.education-date span')?.textContent.trim();
+                    const detail = item.querySelector('.education-details')?.textContent.trim();
+                    if (degree) addParagraph(degree, { style: 'Heading2', bold: true });
+                    if (school) addParagraph(school, { style: 'Normal', italic: true });
+                    if (date) addParagraph(date, { style: 'Normal', italic: true });
+                    if (detail) addParagraph(detail, { style: 'Normal' });
+                });
+            } else if (section.querySelector('.certification-item')) {
+                section.querySelectorAll('.certification-item').forEach(item => {
+                    const title = item.querySelector('h4')?.textContent.trim();
+                    const details = item.querySelector('p')?.textContent.trim();
+                    if (title) addParagraph(title, { style: 'Heading2', bold: true });
+                    if (details) addParagraph(details, { style: 'Normal' });
+                });
+            } else if (section.querySelector('.project-item')) {
+                section.querySelectorAll('.project-item').forEach(item => {
+                    const title = item.querySelector('.project-header h3')?.textContent.trim();
+                    if (title) addParagraph(title, { style: 'Heading2', bold: true });
+                    item.querySelectorAll('.project-description').forEach(projectParagraph => {
+                        addParagraph(`• ${projectParagraph.textContent.trim()}`, { style: 'Normal', bullet: true });
+                    });
+                    const tech = Array.from(item.querySelectorAll('.tech-tag'))
+                        .map(tag => tag.textContent.trim())
+                        .filter(Boolean)
+                        .join(', ');
+                    if (tech) addParagraph(`Technologies: ${tech}`, { style: 'Normal', italic: true });
+                });
+            } else {
+                const text = content.textContent.replace(/\s+/g, ' ').trim();
+                if (text) addParagraph(text, { style: 'Normal' });
+            }
+        });
+
+        return blocks;
+    }
+
+    function exportResumeToDocx() {
+        if (typeof JSZip === 'undefined') {
+            alert('DOCX export is unavailable because the ZIP library could not be loaded.');
+            return;
+        }
+
+        const blocks = buildDocxBlocks();
+        const body = blocks.map(block => {
+            const runProps = [];
+            if (block.bold) runProps.push('<w:b/>');
+            if (block.italic) runProps.push('<w:i/>');
+            const runPr = runProps.length ? `<w:rPr>${runProps.join('')}</w:rPr>` : '';
+
+            const pPr = `<w:pPr><w:pStyle w:val="${block.style}"/><w:jc w:val="${block.align}"/>${block.bullet ? '<w:ind w:left="720"/>' : ''}<w:spacing w:after="120"/></w:pPr>`;
+            return `<w:p>${pPr}<w:r>${runPr}<w:t xml:space="preserve">${escapeXml(block.text)}</w:t></w:r></w:p>`;
+        }).join('');
+
+        const documentXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:body>${body}<w:sectPr><w:pgSz w:w="12240" w:h="15840"/><w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440" w:header="708" w:footer="708" w:gutter="0"/></w:sectPr></w:body>
+</w:document>`;
+
+        const stylesXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:style w:type="paragraph" w:default="1" w:styleId="Normal">
+    <w:name w:val="Normal"/>
+    <w:qFormat/>
+    <w:pPr><w:spacing w:after="120"/></w:pPr>
+    <w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/><w:sz w:val="22"/></w:rPr>
+  </w:style>
+  <w:style w:type="paragraph" w:styleId="Title">
+    <w:name w:val="Title"/>
+    <w:basedOn w:val="Normal"/>
+    <w:qFormat/>
+    <w:pPr><w:spacing w:before="120" w:after="60"/></w:pPr>
+    <w:rPr><w:b/><w:sz w:val="28"/></w:rPr>
+  </w:style>
+  <w:style w:type="paragraph" w:styleId="Subtitle">
+    <w:name w:val="Subtitle"/>
+    <w:basedOn w:val="Normal"/>
+    <w:qFormat/>
+    <w:pPr><w:spacing w:after="80"/></w:pPr>
+    <w:rPr><w:i/><w:sz w:val="22"/></w:rPr>
+  </w:style>
+  <w:style w:type="paragraph" w:styleId="Heading1">
+    <w:name w:val="heading 1"/>
+    <w:basedOn w:val="Normal"/>
+    <w:qFormat/>
+    <w:pPr><w:spacing w:before="220" w:after="100"/></w:pPr>
+    <w:rPr><w:b/><w:sz w:val="24"/></w:rPr>
+  </w:style>
+  <w:style w:type="paragraph" w:styleId="Heading2">
+    <w:name w:val="heading 2"/>
+    <w:basedOn w:val="Normal"/>
+    <w:qFormat/>
+    <w:pPr><w:spacing w:before="160" w:after="70"/></w:pPr>
+    <w:rPr><w:b/><w:sz w:val="22"/></w:rPr>
+  </w:style>
+  <w:style w:type="paragraph" w:styleId="ListParagraph">
+    <w:name w:val="List Paragraph"/>
+    <w:basedOn w:val="Normal"/>
+    <w:qFormat/>
+    <w:pPr><w:spacing w:after="80"/><w:ind w:left="720"/></w:pPr>
+  </w:style>
+</w:styles>`;
+
+        const contentTypesXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+  <Default Extension="xml" ContentType="application/xml"/>
+  <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+  <Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/>
+</Types>`;
+
+        const rootRelsXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
+</Relationships>`;
+
+        const documentRelsXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>
+</Relationships>`;
+
+        const zip = new JSZip();
+        zip.file('[Content_Types].xml', contentTypesXml);
+        zip.file('_rels/.rels', rootRelsXml);
+        zip.file('word/document.xml', documentXml);
+        zip.file('word/styles.xml', stylesXml);
+        zip.file('word/_rels/document.xml.rels', documentRelsXml);
+
+        zip.generateAsync({ type: 'blob' }).then(blob => {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'julius-nicolas-cv.docx';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        });
+    }
+
+    document.querySelector('[data-export-docx]')?.addEventListener('click', exportResumeToDocx);
+
     function buildProfessionalExportMarkup(options = {}) {
         const exportMode = options.mode || 'uk';
         const isGbStandard = exportMode === 'gb-standard';

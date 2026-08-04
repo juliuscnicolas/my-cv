@@ -116,6 +116,7 @@
                 box-shadow: none;
                 border: none;
                 max-width: 100%;
+                min-height: auto !important;
             }
 
             .header,
@@ -137,6 +138,10 @@
                 break-inside: avoid;
             }
 
+            .no-print {
+                display: none !important;
+            }
+
             .section-title,
             body[data-view-mode="professional"] .section-title {
                 color: #000;
@@ -151,6 +156,10 @@
             body[data-view-mode="professional"] .section-title::after {
                 display: none !important;
                 content: none !important;
+            }
+
+            .footer {
+                display: none !important;
             }
 
             .experience-item,
@@ -180,13 +189,24 @@
 
             .quote-note,
             .skill-tag,
-            .tech-tag {
+            .tech-tag,
+            .cert-badge-icon,
+            .certification-item a,
+            .cert-sep,
+            .cert-code {
                 background: transparent;
                 border: none;
                 padding: 0;
                 margin: 0;
                 color: #000;
                 font-style: normal;
+            }
+
+            .cert-badge-icon,
+            .certification-item a,
+            .cert-sep,
+            .cert-code {
+                display: none !important;
             }
 
             .skills-grid,
@@ -225,6 +245,14 @@
             a {
                 color: inherit;
                 text-decoration: none;
+            }
+
+            .footer-links {
+                display: none !important;
+            }
+
+            .footer-content p {
+                display: none !important;
             }
 
             .visa-highlight {
@@ -266,8 +294,8 @@
 <body data-view-mode="professional">
     <div class="version-toolbar">
         <div class="version-toolbar-inner">
-            <a class="version-btn" href="index.html"><i class="fas fa-arrow-left"></i>Back to current version</a>
             <button class="version-btn version-btn-primary" type="button" onclick="window.print()"><i class="fas fa-print"></i>Print</button>
+            <button class="version-btn" type="button" data-export-docx><i class="fas fa-file-word"></i>Export DOCX</button>
         </div>
     </div>
 
@@ -323,7 +351,8 @@
                             <div class="skill-tags">
                                 <span class="skill-tag">C#</span>
                                 <span class="skill-tag">.NET Core</span>
-                                <span class="skill-tag">ASP.NET Core</span>
+                                <span class="skill-tag">.NET Core</span>
+                                <span class="skill-tag">Entity Framework Core</span>
                                 <span class="skill-tag">REST APIs</span>
                                 <span class="skill-tag">Microservices</span>
                                 <span class="skill-tag">Azure App Service</span>
@@ -377,6 +406,9 @@
                                 <span class="skill-tag">Bitbucket</span>
                                 <span class="skill-tag">JIRA</span>
                                 <span class="skill-tag">PowerShell</span>
+                                <span class="skill-tag">Swagger</span>
+                                <span class="skill-tag">Postman</span>
+                                <span class="skill-tag">Rest Client</span>
                                 <span class="skill-tag">Umbraco</span>
                                 <span class="skill-tag">Contentstack</span>
                                 <span class="skill-tag">Optimizely</span>
@@ -400,8 +432,8 @@
                     <div class="experience-item">
                         <div class="experience-header">
                             <div class="experience-title">
-                                <h3>Senior Software Engineer B3 (Promoted from Software Engineer B2)</h3>
-                                <p class="company">Cognizant Technology Solutions Philippines - Alaska Airlines</p>
+                                <h3>Senior Software Engineer B3</h3>
+                                <p class="company">Cognizant Technology Solutions, Makati, Philippines - Alaska Airlines</p>
                             </div>
                             <div class="experience-date">
                                 <i class="fas fa-calendar-alt"></i>
@@ -411,6 +443,9 @@
                         <ul class="experience-details">
                             <li>Progressed from Software Engineer B2 to Lead Developer while supporting Alaska Airlines' Loyalty Rewards platform.</li>
                             <li>Led one Loyalty Rewards POD and delivered roadmap features and milestone updates for the 2026 program.</li>
+                            <li>Implemented Contentstack CMS integration so editors could manage and publish Loyalty Rewards app content with greater control and faster turnaround.</li>
+                            <li>Prepared team user stories and defined clear Definition of Ready (DoR) and Definition of Done (DoD) criteria to improve delivery quality.</li>
+                            <li>Collaborated with business stakeholders in backlog refinement sessions to align requirements, priorities, and implementation scope.</li>
                             <li>Built and maintained scalable C#/.NET APIs using Clean Architecture, improving maintainability, reliability, and release quality.</li>
                             <li>Optimized Azure Service Bus and Function App processing, increasing throughput while controlling operational cost.</li>
                         </ul>
@@ -419,10 +454,16 @@
                             <span class="tech-tag">React</span>
                             <span class="tech-tag">Minimal API</span>
                             <span class="tech-tag">REST API</span>
+                            <span class="tech-tag">EF Core</span>
                             <span class="tech-tag">Azure</span>
+                            <span class="tech-tag">Azure Service Bus</span>
                             <span class="tech-tag">SQL Server</span>
                             <span class="tech-tag">NUnit</span>
                             <span class="tech-tag">Swagger</span>
+                            <span class="tech-tag">Postman</span>
+                            <span class="tech-tag">Optimizely</span>
+                            <span class="tech-tag">Contentstack</span>
+                            <span class="tech-tag">Docker</span>
                             <span class="tech-tag">GitHub Copilot</span>
                         </div>
                     </div>
@@ -431,7 +472,7 @@
                         <div class="experience-header">
                             <div class="experience-title">
                                 <h3>Software Engineer B2 / Consultant</h3>
-                                <p class="company">Magenic Manila Inc. (Acquired by Cognizant) - Domino's Pizza</p>
+                                <p class="company">Magenic Manila Inc., Makati, Philippines (Acquired by Cognizant) - Domino's Pizza</p>
                             </div>
                             <div class="experience-date">
                                 <i class="fas fa-calendar-alt"></i>
@@ -448,6 +489,9 @@
                             <span class="tech-tag">SQL Server</span>
                             <span class="tech-tag">GraphQL</span>
                             <span class="tech-tag">Jenkins</span>
+                            <span class="tech-tag">Jest</span>
+                            <span class="tech-tag">React Testing Library</span>
+                            <span class="tech-tag">MSTest</span>
                             <span class="tech-tag">Cypress</span>
                         </div>
                     </div>
@@ -456,7 +500,7 @@
                         <div class="experience-header">
                             <div class="experience-title">
                                 <h3>Software Engineer / Consultant</h3>
-                                <p class="company">Magenic Manila Inc. (Acquired by Cognizant) - Ensek</p>
+                                <p class="company">Magenic Manila Inc., Philippines (Acquired by Cognizant) - Ensek</p>
                             </div>
                             <div class="experience-date">
                                 <i class="fas fa-calendar-alt"></i>
@@ -464,15 +508,17 @@
                             </div>
                         </div>
                         <ul class="experience-details">
-                            <li>Built AngularJS frontends and .NET APIs as a full-stack developer in Agile delivery teams.</li>
-                            <li>Supported integration and deployment activities to ensure reliable releases.</li>
+                            <li>Assigned as a Consultant to maintain and enhance existing internal business applications.</li>
+                            <li>Designed and developed web pages using the client's custom JSON-based page creation framework.</li>
+                            <li>Supported Collections and Payments workflows by investigating reported defects and resolving computation discrepancies.</li>
+                            <li>Worked as a full-stack developer across Vue.js frontends, .NET APIs, and SQL Server databases.</li>
                         </ul>
                         <div class="tech-stack">
                             <span class="tech-tag">.NET</span>
-                            <span class="tech-tag">AngularJS</span>
+                            <span class="tech-tag">Vue.js</span>
                             <span class="tech-tag">SQL Server</span>
-                            <span class="tech-tag">PostgreSQL</span>
-                            <span class="tech-tag">Azure</span>
+                            <span class="tech-tag">REST API</span>
+                            <span class="tech-tag">JSON</span>
                         </div>
                     </div>
 
@@ -480,7 +526,7 @@
                         <div class="experience-header">
                             <div class="experience-title">
                                 <h3>Consultant / Developer</h3>
-                                <p class="company">Magenic Manila Inc. - EY and Broadridge</p>
+                                <p class="company">Magenic Manila Inc., Makati, Philippines - EY and Broadridge</p>
                             </div>
                             <div class="experience-date">
                                 <i class="fas fa-calendar-alt"></i>
@@ -504,7 +550,7 @@
                         <div class="experience-header">
                             <div class="experience-title">
                                 <h3>Senior Software Engineer</h3>
-                                <p class="company">Cloud Employee - Leisure Insurance Company</p>
+                                <p class="company">Total Cloud Solutions Inc. (Cloud Employee), Makati Philippines</p>
                             </div>
                             <div class="experience-date">
                                 <i class="fas fa-calendar-alt"></i>
@@ -512,11 +558,16 @@
                             </div>
                         </div>
                         <ul class="experience-details">
-                            <li>Developed tenant-based insurance applications using Umbraco CMS and AngularJS.</li>
-                            <li>Managed integration, testing, and deployment activities to support reliable releases.</li>
+                            <li>Served as a Consultant / Senior .NET Developer for Ripe Insurance UK, supporting the team in delivering and maintaining insurance applications.</li>
+                            <li>Assigned to the Generate Quote module, supporting feature maintenance and enhancements for quote computation workflows.</li>
+                            <li>Investigated and resolved bugs across frontend and backend layers, identifying root causes and implementing reliable fixes.</li>
+                            <li>Contributed to the ongoing support and improvement of tenant-based insurance solutions built with Umbraco CMS and AngularJS.</li>
+                            <li>Coordinated integration, testing, and deployment activities to support stable and consistent releases.</li>
                         </ul>
                         <div class="tech-stack">
                             <span class="tech-tag">ASP.NET</span>
+                            <span class="tech-tag">C#</span>
+                            <span class="tech-tag">MVC</span>
                             <span class="tech-tag">AngularJS</span>
                             <span class="tech-tag">Umbraco</span>
                             <span class="tech-tag">SQL Server</span>
@@ -528,7 +579,7 @@
                         <div class="experience-header">
                             <div class="experience-title">
                                 <h3>Software Engineer</h3>
-                                <p class="company">PetSure Services Inc, Taguig</p>
+                                <p class="company">PetSure Services Inc, Taguig, Philippines</p>
                             </div>
                             <div class="experience-date">
                                 <i class="fas fa-calendar-alt"></i>
@@ -536,11 +587,17 @@
                             </div>
                         </div>
                         <ul class="experience-details">
-                            <li>Built multi-tenant web applications and improved workflow automation.</li>
-                            <li>Increased release reliability through structured delivery and support practices.</li>
+                            <li>At PetSure (Pet Insurance Australia), I was assigned to enhance the Pet Insurance Quote Tool as part of a CRM implementation.</li>
+                            <li>Used Umbraco CMS to enable providers, including Bupa and Medibank, to control, customize, and publish their own content updates.</li>
+                            <li>Improved release reliability through structured delivery, testing, and support practices.</li>
                         </ul>
                         <div class="tech-stack">
                             <span class="tech-tag">ASP.NET</span>
+                            <span class="tech-tag">C#</span>
+                            <span class="tech-tag">.NET Core</span>
+                            <span class="tech-tag">MVC</span>
+                            <span class="tech-tag">EF Core</span>
+                            <span class="tech-tag">CQRS</span>
                             <span class="tech-tag">AngularJS</span>
                             <span class="tech-tag">Umbraco</span>
                             <span class="tech-tag">SQL Server</span>
@@ -552,7 +609,7 @@
                         <div class="experience-header">
                             <div class="experience-title">
                                 <h3>Consultant / Software Engineer</h3>
-                                <p class="company">Yondu, Taguig PH - EastWest Bank</p>
+                                <p class="company">Yondu, Taguig, Philippines - EastWest Bank</p>
                             </div>
                             <div class="experience-date">
                                 <i class="fas fa-calendar-alt"></i>
@@ -578,7 +635,7 @@
                         <div class="experience-header">
                             <div class="experience-title">
                                 <h3>Consultant / Software Engineer</h3>
-                                <p class="company">Flexisouce IT (Formerly Big OS Corp), Makati PH</p>
+                                <p class="company">Flexisouce IT (Formerly Big OS Corp), Makati, Philippines</p>
                             </div>
                             <div class="experience-date">
                                 <i class="fas fa-calendar-alt"></i>
@@ -605,7 +662,7 @@
                         <div class="experience-header">
                             <div class="experience-title">
                                 <h3>Web Developer</h3>
-                                <p class="company">Oak Drive Ventures, Taguig PH</p>
+                                <p class="company">Oak Drive Ventures, Taguig, Philippines</p>
                             </div>
                             <div class="experience-date">
                                 <i class="fas fa-calendar-alt"></i>
@@ -630,7 +687,7 @@
                         <div class="experience-header">
                             <div class="experience-title">
                                 <h3>Developer / IT Support</h3>
-                                <p class="company">Non-life Insurance Company, Makati</p>
+                                <p class="company">Non-life Insurance Company, Makati, Philippines</p>
                             </div>
                             <div class="experience-date">
                                 <i class="fas fa-calendar-alt"></i>
@@ -654,7 +711,7 @@
                         <div class="experience-header">
                             <div class="experience-title">
                                 <h3>Developer</h3>
-                                <p class="company">Consulting Company, Makati</p>
+                                <p class="company">Consulting Company, Makati, Philippines</p>
                             </div>
                             <div class="experience-date">
                                 <i class="fas fa-calendar-alt"></i>
@@ -674,106 +731,13 @@
             </section>
 
             <section class="section">
-                <h2 class="section-title">Technical Skills</h2>
-                <div class="section-content">
-                    <div class="skills-grid">
-                        <div class="skill-category">
-                            <h4>Languages & Frameworks</h4>
-                            <div class="skill-tags">
-                                <span class="skill-tag">C#</span>
-                                <span class="skill-tag">.NET Framework</span>
-                                <span class="skill-tag">ASP.NET Core</span>
-                                <span class="skill-tag">MVC</span>
-                                <span class="skill-tag">Minimal APIs</span>
-                                <span class="skill-tag">Progress 4GL</span>
-                                <span class="skill-tag">Python</span>
-                            </div>
-                        </div>
-                        <div class="skill-category">
-                            <h4>Frontend</h4>
-                            <div class="skill-tags">
-                                <span class="skill-tag">React</span>
-                                <span class="skill-tag">Angular</span>
-                                <span class="skill-tag">AngularJS</span>
-                                <span class="skill-tag">Vue.js</span>
-                                <span class="skill-tag">HTML5</span>
-                                <span class="skill-tag">CSS</span>
-                                <span class="skill-tag">JavaScript</span>
-                            </div>
-                        </div>
-                        <div class="skill-category">
-                            <h4>Databases</h4>
-                            <div class="skill-tags">
-                                <span class="skill-tag">SQL Server</span>
-                                <span class="skill-tag">PostgreSQL</span>
-                                <span class="skill-tag">MongoDB</span>
-                                <span class="skill-tag">Oracle</span>
-                                <span class="skill-tag">MySQL</span>
-                                <span class="skill-tag">Progress OpenEdge</span>
-                            </div>
-                        </div>
-                        <div class="skill-category">
-                            <h4>Cloud & DevOps</h4>
-                            <div class="skill-tags">
-                                <span class="skill-tag">Microsoft Azure</span>
-                                <span class="skill-tag">Azure VM</span>
-                                <span class="skill-tag">Azure App Service</span>
-                                <span class="skill-tag">Azure Function App</span>
-                                <span class="skill-tag">APIM</span>
-                                <span class="skill-tag">CI/CD</span>
-                                <span class="skill-tag">Azure DevOps</span>
-                                <span class="skill-tag">Azure Key Vault</span>
-                                <span class="skill-tag">Azure Pipelines</span>
-                                <span class="skill-tag">Docker Containerization</span>
-                                <span class="skill-tag">Kubernetes</span>
-                                <span class="skill-tag">Jenkins</span>
-                            </div>
-                        </div>
-                        <div class="skill-category">
-                            <h4>Testing</h4>
-                            <div class="skill-tags">
-                                <span class="skill-tag">xUnit</span>
-                                <span class="skill-tag">NUnit</span>
-                                <span class="skill-tag">MSTest</span>
-                                <span class="skill-tag">Jest</span>
-                                <span class="skill-tag">React Testing Library</span>
-                                <span class="skill-tag">Cypress</span>
-                                <span class="skill-tag">Moq</span>
-                            </div>
-                        </div>
-                        <div class="skill-category">
-                            <h4>Tools & Platforms</h4>
-                            <div class="skill-tags">
-                                <span class="skill-tag">Git</span>
-                                <span class="skill-tag">Bitbucket</span>
-                                <span class="skill-tag">Azure Repos</span>
-                                <span class="skill-tag">JIRA</span>
-                                <span class="skill-tag">PowerShell</span>
-                                <span class="skill-tag">Umbraco</span>
-                                <span class="skill-tag">Contentstack</span>
-                                <span class="skill-tag">Optimizely</span>
-                            </div>
-                        </div>
-                        <div class="skill-category">
-                            <h4>AI</h4>
-                            <div class="skill-tags">
-                                <span class="skill-tag">GitHub Copilot</span>
-                                <span class="skill-tag">Cursor</span>
-                                <span class="skill-tag">Speckit</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section class="section">
                 <h2 class="section-title">Education</h2>
                 <div class="section-content">
                     <div class="education-item">
                         <div class="education-header">
                             <div class="education-title">
                                 <h3>Bachelor of Science in Information Technology</h3>
-                                <p class="university">University of the East - Manila</p>
+                                <p class="university">University of the East - Manila, Philippines</p>
                             </div>
                             <div class="education-date">
                                 <i class="fas fa-graduation-cap"></i>
@@ -795,20 +759,20 @@
                             <img src="img/microsoft-certified-fundamentals-badge.svg" alt="Microsoft Certified Fundamentals Badge" class="cert-badge-icon">
                             <div>
                                 <h4>AZ-900: Microsoft Azure Fundamentals</h4>
-                                <p>Microsoft &bull; Nov 2020 &bull; <span class="cert-code">AZ-900</span> &bull; <a href="https://learn.microsoft.com/api/credentials/share/en-us/JuliusOliverNicolas-5266/1FC5C697F97C9C16?sharingId=5224A47166188A4F" target="_blank" rel="noopener noreferrer">View Credential</a></p>
+                                <p>Microsoft <span class="cert-sep">&bull;</span> Nov 2020 <span class="cert-sep">&bull;</span> <span class="cert-code">AZ-900</span> <span class="cert-sep">&bull;</span> <a href="https://learn.microsoft.com/api/credentials/share/en-us/JuliusOliverNicolas-5266/1FC5C697F97C9C16?sharingId=5224A47166188A4F" target="_blank" rel="noopener noreferrer">View Credential</a></p>
                             </div>
                         </div>
                         <div class="certification-item">
                             <img src="img/github-copilot.svg" alt="GitHub Copilot Badge" class="cert-badge-icon">
                             <div>
                                 <h4>GH-300 - GitHub Copilot</h4>
-                                <p>Microsoft &bull; Apr 29, 2026 &bull; <span class="cert-code">GH-300</span> &bull; <a href="https://learn.microsoft.com/api/credentials/share/en-us/JuliusOliverNicolas-5266/22FC4F4B3E213C0E?sharingId=5224A47166188A4F" target="_blank" rel="noopener noreferrer">View Credential</a></p>
+                                <p>Microsoft <span class="cert-sep">&bull;</span> Apr 29, 2026 <span class="cert-sep">&bull;</span> <span class="cert-code">GH-300</span> <span class="cert-sep">&bull;</span> <a href="https://learn.microsoft.com/api/credentials/share/en-us/JuliusOliverNicolas-5266/22FC4F4B3E213C0E?sharingId=5224A47166188A4F" target="_blank" rel="noopener noreferrer">View Credential</a></p>
                             </div>
                         </div>                    </div>
                 </div>
             </section>
 
-            <section class="section">
+            <section class="section no-print">
                 <h2 class="section-title">Featured Projects</h2>
                 <div class="section-content">
                     <div class="projects-grid">
@@ -910,7 +874,7 @@
                 </div>
             </section>
 
-            <section class="section">
+            <section class="section no-print">
                 <h2 class="section-title">Portfolio &amp; Open Source</h2>
                 <div class="section-content">
                     <div class="portfolio-grid">
@@ -983,6 +947,7 @@
         </footer>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
