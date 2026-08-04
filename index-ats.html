@@ -116,6 +116,7 @@
                 box-shadow: none;
                 border: none;
                 max-width: 100%;
+                min-height: auto !important;
             }
 
             .header,
@@ -157,6 +158,10 @@
                 content: none !important;
             }
 
+            .footer {
+                display: none !important;
+            }
+
             .experience-item,
             .education-item,
             .certification-item,
@@ -184,13 +189,24 @@
 
             .quote-note,
             .skill-tag,
-            .tech-tag {
+            .tech-tag,
+            .cert-badge-icon,
+            .certification-item a,
+            .cert-sep,
+            .cert-code {
                 background: transparent;
                 border: none;
                 padding: 0;
                 margin: 0;
                 color: #000;
                 font-style: normal;
+            }
+
+            .cert-badge-icon,
+            .certification-item a,
+            .cert-sep,
+            .cert-code {
+                display: none !important;
             }
 
             .skills-grid,
@@ -229,6 +245,14 @@
             a {
                 color: inherit;
                 text-decoration: none;
+            }
+
+            .footer-links {
+                display: none !important;
+            }
+
+            .footer-content p {
+                display: none !important;
             }
 
             .visa-highlight {
@@ -735,14 +759,14 @@
                             <img src="img/microsoft-certified-fundamentals-badge.svg" alt="Microsoft Certified Fundamentals Badge" class="cert-badge-icon">
                             <div>
                                 <h4>AZ-900: Microsoft Azure Fundamentals</h4>
-                                <p>Microsoft &bull; Nov 2020 &bull; <span class="cert-code">AZ-900</span> &bull; <a href="https://learn.microsoft.com/api/credentials/share/en-us/JuliusOliverNicolas-5266/1FC5C697F97C9C16?sharingId=5224A47166188A4F" target="_blank" rel="noopener noreferrer">View Credential</a></p>
+                                <p>Microsoft <span class="cert-sep">&bull;</span> Nov 2020 <span class="cert-sep">&bull;</span> <span class="cert-code">AZ-900</span> <span class="cert-sep">&bull;</span> <a href="https://learn.microsoft.com/api/credentials/share/en-us/JuliusOliverNicolas-5266/1FC5C697F97C9C16?sharingId=5224A47166188A4F" target="_blank" rel="noopener noreferrer">View Credential</a></p>
                             </div>
                         </div>
                         <div class="certification-item">
                             <img src="img/github-copilot.svg" alt="GitHub Copilot Badge" class="cert-badge-icon">
                             <div>
                                 <h4>GH-300 - GitHub Copilot</h4>
-                                <p>Microsoft &bull; Apr 29, 2026 &bull; <span class="cert-code">GH-300</span> &bull; <a href="https://learn.microsoft.com/api/credentials/share/en-us/JuliusOliverNicolas-5266/22FC4F4B3E213C0E?sharingId=5224A47166188A4F" target="_blank" rel="noopener noreferrer">View Credential</a></p>
+                                <p>Microsoft <span class="cert-sep">&bull;</span> Apr 29, 2026 <span class="cert-sep">&bull;</span> <span class="cert-code">GH-300</span> <span class="cert-sep">&bull;</span> <a href="https://learn.microsoft.com/api/credentials/share/en-us/JuliusOliverNicolas-5266/22FC4F4B3E213C0E?sharingId=5224A47166188A4F" target="_blank" rel="noopener noreferrer">View Credential</a></p>
                             </div>
                         </div>                    </div>
                 </div>
